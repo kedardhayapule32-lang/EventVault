@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — EventVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#2d5be3;--accent3:#2da868;--bg:#f4f6ff;--surface:#fff;--border:#e2e8f0;--text:#1a2040;--text2:#64748b;--ease: cubic-bezier(0.4, 0, 0.2, 1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x: hidden;}
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+.top-bar{background:var(--accent);color:#fff;text-align:center;padding:4px;font-size:12px;font-family:'Space Mono',monospace;letter-spacing:1px;animation: fadeIn 0.8s var(--ease);min-height:8px;}
+.hero{background:linear-gradient(135deg,#1a2d6b,#2d5be3);padding:15px 20px;text-align:center;color:#fff;animation: fadeIn 1s var(--ease);}
+.logo{font-family:'Fraunces',serif;font-size:20px;font-weight:700;margin-bottom:4px;transition: transform 0.3s var(--ease);}
+.logo:hover { transform: scale(1.05); }
+.logo span{opacity:0.7}
+.hero h1{font-family:'Fraunces',serif;font-size:28px;font-weight:700;margin:4px 0 4px;line-height:1.2;animation: slideUp 0.8s var(--ease) 0.2s both;}
+.hero-meta{display:flex;flex-direction:row;gap:12px;justify-content:center;align-items:center;margin:5px 0;animation: fadeIn 1s var(--ease) 0.4s both;flex-wrap:wrap;}
+.hero-meta-item{display:flex;align-items:center;gap:8px;font-size:14px;opacity:0.9;font-family:'Space Mono',monospace}
+.container{max-width:520px;margin:0 auto;padding:32px 16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;margin-bottom:24px;box-shadow:0 10px 30px rgba(0,0,0,0.06);animation: slideUp 0.8s var(--ease) 0.5s both;transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);}
+.card:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+.card h2{font-size:18px;font-weight:800;margin-bottom:24px;letter-spacing: -0.5px;}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}
+.form-group input,.form-group select{width:100%;background:#f8fafc;border:2px solid transparent;border-radius:12px;padding:12px 16px;color:var(--text);font-family:'Nunito',sans-serif;font-size:15px;outline:none;transition:all 0.3s var(--ease)}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent);background: #fff; box-shadow: 0 4px 12px rgba(45,91,227,0.08);}
+.radio-group{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.radio-card{border:2px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.3s var(--ease)}
+.radio-card:hover{border-color:var(--accent); background: rgba(45,91,227,0.02); transform: translateY(-2px);}
+.radio-card.selected{border-color:var(--accent);background:#eff2ff; box-shadow: 0 4px 12px rgba(45,91,227,0.1);}
+.radio-card input{display:none}
+.radio-card-title{font-weight:800;font-size:14px;margin-bottom:4px}
+.radio-card-sub{font-size:12px;color:var(--text2)}
+.role-option{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border:2px solid var(--border);border-radius:14px;cursor:pointer;margin-bottom:10px;transition:all 0.3s var(--ease)}
+.role-option:hover:not(.disabled){border-color:var(--accent);background: rgba(45,91,227,0.02); transform: translateX(5px);}
+.role-option.selected{border-color:var(--accent);background:#eff2ff; transform: scale(1.02); box-shadow: 0 4px 12px rgba(45,91,227,0.1);}
+.role-option:not(.selected) .role-check{opacity: 0; transform: scale(0.5); transition: all 0.3s var(--ease);}
+.role-option.selected .role-check { opacity: 1; transform: scale(1); }
+.role-option.disabled{opacity:0.45;cursor:not-allowed; filter: grayscale(1);}
+.role-name{font-weight:700;font-size:14px}
+.role-slots{font-size:12px;color:var(--text2);font-family:'Space Mono',monospace; margin-top: 4px;}
+.slot-pips{display:flex;gap:4px;margin-top:6px}
+.slot-pip{width:10px;height:6px;border-radius:3px;background:#e2e8f0; transition: all 0.4s var(--ease);}
+.slot-pip.f{background:var(--accent)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;cursor:pointer;border:none;transition:all 0.3s var(--ease); position: relative; overflow: hidden;}
+.btn:active { transform: scale(0.97); }
+.btn-primary{background:var(--accent);color:#fff; box-shadow: 0 8px 24px rgba(45,91,227,0.25);}
+.btn-primary:hover{background:#2450cc;transform:translateY(-2px); box-shadow: 0 12px 32px rgba(45,91,227,0.35);}
+.error{color:#dc2626;font-size:13px;font-family:'Space Mono',monospace;margin-bottom:16px; animation: fadeIn 0.3s var(--ease);}
+.success-card{background:linear-gradient(135deg,#16a34a,#2da868);color:#fff;border-radius:24px;padding:48px 32px;text-align:center;display:none; animation: scaleIn 0.5s var(--ease);}
+.success-card.show{display:block}
+.success-icon{font-size:64px;margin-bottom:20px}
+.success-title{font-family:'Fraunces',serif;font-size:28px;font-weight:700;margin-bottom:12px}
+.success-sub{opacity:0.9;font-size:15px;line-height:1.6}
+.spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cat-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;margin-bottom:12px}
+.footer-link{text-align:center;margin-top:24px;font-size:14px;color:var(--text2); animation: fadeIn 1s var(--ease) 0.8s both;}
+.footer-link a{color:var(--accent);font-weight:600; text-decoration: none; transition: color 0.3s;}
+.footer-link a:hover { color: #2450cc; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="top-bar"></div>
+<div class="hero">
+  <div style="position: absolute; top: 15px; left: 20px; z-index: 10;">
+    <button onclick="history.back()" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;" title="Go Back">←</button>
+  </div>
+  <div class="logo" style="margin-bottom:4px">EventVault</div>
+  <div id="hero-cat" class="cat-badge">Loading...</div>
+  <h1 id="hero-title">Loading event...</h1>
+  <div class="hero-meta">
+    <div class="hero-meta-item">📅 <span id="hero-date"></span></div>
+    <div class="hero-meta-item">🕐 <span id="hero-time"></span></div>
+    <div class="hero-meta-item">📍 <span id="hero-loc"></span></div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="signup-form">
+    <div class="card" id="desc-card" style="display:none">
+      <p id="hero-desc" style="font-size:14px;color:var(--text2);line-height:1.6;white-space:pre-wrap;word-wrap:break-word"></p>
+    </div>
+    <div class="card">
+      <h2>Register for this event</h2>
+      <div id="type-selection-sec" class="form-group">
+        <label>Sign up as</label>
+        <div class="radio-group">
+          <label class="radio-card selected" id="rc-vol" onclick="selType('volunteer')"><input type="radio" name="t" value="volunteer"><div class="radio-card-title">🙋 Volunteer</div><div class="radio-card-sub">Help organize</div></label>
+          <label class="radio-card" id="rc-part" onclick="selType('participant')"><input type="radio" name="t" value="participant"><div class="radio-card-title">🎟️ Participant</div><div class="radio-card-sub">Just attend</div></label>
+        </div>
+      </div>
+      <div id="role-sec" class="form-group">
+        <label>Volunteer role</label>
+        <div id="role-list"></div>
+      </div>
+      
+      <div id="team-sec" style="display:none; margin-bottom: 10px;">
+        <div class="card" style="border-left: 4px solid var(--accent); padding: 15px; background: #f8faff;">
+          <h3 style="font-size: 13px; margin-bottom: 10px; color: var(--accent);">🏏 Team Details</h3>
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Team Name *</label>
+            <input type="text" id="r-team-name" placeholder="e.g. The Invincibles" oninput="checkTeam()">
+          </div>
+          <div id="password-sec-inner" class="form-group" style="margin-bottom:12px">
+            <label>Password *</label>
+            <input type="password" id="r-password" placeholder="Create or join with team password" autocomplete="new-password" oninput="checkTeam()">
+          </div>
+          <div id="team-info" style="font-size: 12px; margin-top: 8px; display:none">
+            <div id="team-status" style="font-weight: 700; margin-bottom: 5px;"></div>
+            <div id="team-members-list" style="color: var(--text2); line-height: 1.4;"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group"><label>Full Name (Enter the name exactly as it should appear on the certificate) *</label><input type="text" id="r-name" placeholder="Your full name" autocomplete="name"></div>
+      <div class="form-group"><label>Email *</label><input type="email" id="r-email" placeholder="your@email.com" autocomplete="email"></div>
+      <div class="form-group"><label>USN (REG NO.) *</label><input type="text" id="r-usn" placeholder="Enter USN or REG NO."></div>
+
+      <div class="form-group"><label>Phone Number</label><input type="tel" id="r-phone" placeholder="+91 XXXXXXXXXX" autocomplete="tel"></div>
+      
+      <div class="form-group">
+        <label>Upload Profile Photo (Max 100KB) *</label>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div id="photo-preview" style="width:60px; height:60px; border-radius:10px; border:2px dashed var(--border); background:#f9f9f9; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+            <span style="font-size:24px; opacity:0.3;">👤</span>
+          </div>
+          <div style="flex:1">
+            <input type="file" id="r-photo" accept="image/*" onchange="previewPhoto(this)" style="font-size:12px; width:100%;">
+            <p style="font-size:10px; color:var(--text2); margin-top:4px;">This photo will appear on your certificate and achievements page.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="err" class="error"></div>
+      <button class="btn btn-primary" onclick="submit()"><span id="btn-txt">Send Verification Code</span></button>
+    </div>
+  </div>
+
+  <div id="verify-section" style="display:none; text-align:center">
+    <div class="card">
+      <div style="font-size:48px; margin-bottom:16px">📧</div>
+      <h2 style="margin-bottom:8px">Verify Your Email</h2>
+      <p style="font-size:14px; color:var(--text2); margin-bottom:12px">Check your Gmail for OTP</p>
+      <p style="font-size:13px; color:var(--text3); margin-bottom:12px">We've sent a 6-digit code to <strong><span id="display-email"></span></strong>.</p>
+      <div class="form-group">
+        <input type="text" id="r-otp" placeholder="000000" maxlength="6" style="text-align:center; letter-spacing:8px; font-size:24px; font-weight:bold; width:100%; padding:12px; border-radius:12px; border:2px solid var(--accent)">
+      </div>
+      <button class="btn btn-primary" onclick="verifyAndRegister()"><span id="verify-btn-txt">Verify & Register</span></button>
+      
+      <div style="margin-top: 20px;">
+        <button id="resend-btn" class="btn" style="background:none; color:var(--accent); font-weight:700; box-shadow:none; padding:8px;" onclick="resendOTP()" disabled>
+          Resend OTP <span id="resend-timer">(60s)</span>
+        </button>
+      </div>
+
+      <button class="btn" style="background:none; color:var(--text2); margin-top:8px; box-shadow:none" onclick="backToForm()">Edit Details</button>
+    </div>
+  </div>
+
+  <div class="success-card" id="success-card">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">You're registered!</div>
+    <div class="success-sub" id="success-msg"></div>
+    
+    <a href="/events.html" style="display:block;margin-top:16px;background:rgba(255,255,255,0.2);color:#fff;padding:12px;border-radius:10px;font-weight:700;text-decoration:none;text-align:center">Browse More Events →</a>
+  </div>
+  <div class="footer-link"><a href="/events.html">Browse all events</a></div>
+</div>
+
+<script>
+const eventId = location.pathname.split('/signup/')[1];
+let selectedType = 'volunteer', selectedRoleId = null, eventData = null;
+
+async function init() {
+  try {
+    const r = await fetch(`/api/events/${eventId}`);
+    const ev = await r.json();
+    if (!r.ok) throw new Error(ev.error);
+    eventData = ev;
+    document.title = ev.title + ' — EventVault';
+    document.getElementById('hero-cat').textContent = ev.category || 'General';
+    document.getElementById('hero-title').textContent = ev.title;
+    document.getElementById('hero-date').textContent = new Date(ev.date).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('hero-time').textContent = ev.time;
+    document.getElementById('hero-loc').textContent = ev.location;
+    if (ev.description) {
+      document.getElementById('hero-desc').textContent = ev.description;
+      document.getElementById('desc-card').style.display = '';
+    }
+    renderRoles(ev.roles || []);
+    
+    // Check for type query param
+    const urlParams = new URLSearchParams(window.location.search);
+    const typeParam = urlParams.get('type');
+    
+    if (typeParam === 'volunteer') {
+      selType('volunteer');
+      document.getElementById('type-selection-sec').style.display = 'none';
+    } else if (typeParam === 'participant') {
+      selType('participant');
+      document.getElementById('type-selection-sec').style.display = 'none';
+    } else if (ev.teamMode === 'team') {
+      // Auto-select participant for team-based events
+      selType('participant');
+    } else {
+      selType('volunteer');
+    }
+  } catch(e) {
+    document.getElementById('hero-title').textContent = 'Event not found';
+  }
+}
+
+function selType(t) {
+  selectedType = t; selectedRoleId = null;
+  document.getElementById('rc-vol').classList.toggle('selected', t === 'volunteer');
+  document.getElementById('rc-part').classList.toggle('selected', t === 'participant');
+  document.getElementById('role-sec').style.display = t === 'volunteer' ? '' : 'none';
+  
+  const isTeam = t === 'participant' && eventData?.teamMode === 'team';
+  document.getElementById('team-sec').style.display = isTeam ? '' : 'none';
+  document.getElementById('password-sec-inner').style.display = isTeam ? '' : 'none';
+  if (!isTeam) document.getElementById('team-info').style.display = 'none';
+}
+
+let teamCheckTimeout = null;
+async function checkTeam() {
+  const teamName = document.getElementById('r-team-name').value.trim();
+  const password = document.getElementById('r-password').value.trim();
+  const infoDiv = document.getElementById('team-info');
+  const statusDiv = document.getElementById('team-status');
+  const listDiv = document.getElementById('team-members-list');
+  
+  if (!teamName) { infoDiv.style.display = 'none'; return; }
+  
+  clearTimeout(teamCheckTimeout);
+  teamCheckTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`/api/registrations/team-check?eventId=${eventId}&teamName=${encodeURIComponent(teamName)}&password=${encodeURIComponent(password)}`);
+      const data = await res.json();
+      
+      infoDiv.style.display = 'block';
+      if (!data.exists) {
+        statusDiv.style.color = '#2da868';
+        statusDiv.textContent = '✨ New Team: You will be the first member!';
+        listDiv.textContent = 'Password will be set by you.';
+      } else if (res.status === 401) {
+        statusDiv.style.color = '#dc2626';
+        statusDiv.textContent = '❌ Incorrect Team Password';
+        listDiv.textContent = 'Please ask your teammates for the correct password.';
+      } else {
+        statusDiv.style.color = 'var(--accent)';
+        statusDiv.textContent = `✅ Team found: ${data.members.length}/${data.teamSize} members joined`;
+        listDiv.innerHTML = '<strong>Joined:</strong> ' + data.members.map(m => m.name).join(', ');
+        if (data.isFull) {
+          statusDiv.style.color = '#dc2626';
+          statusDiv.textContent = `🚫 Team Full (${data.teamSize}/${data.teamSize})`;
+        }
+      }
+    } catch (e) { console.error(e); }
+  }, 500);
+}
+
+function renderRoles(roles) {
+  document.getElementById('role-list').innerHTML = roles.map(r => {
+    const pips = Array.from({length: r.slots}, (_, i) => `<div class="slot-pip ${i < r.filled ? 'f' : ''}"></div>`).join('');
+    return `<div class="role-option ${r.remaining === 0 ? 'disabled' : ''}" id="ro-${r.id}" onclick="selRole('${r.id}',${r.remaining===0})">
+      <div><div class="role-name">${r.name}</div><div class="slot-pips">${pips}</div><div class="role-slots">${r.remaining}/${r.slots} open</div></div>
+      <span style="font-size:18px">${r.remaining === 0 ? '🚫' : '<span class="role-check">✓</span>'}</span>
+    </div>`;
+  }).join('') || '<div style="color:var(--text2);font-size:13px">No volunteer roles defined for this event.</div>';
+}
+
+function selRole(id, disabled) {
+  if (disabled) return;
+  selectedRoleId = id;
+  document.querySelectorAll('.role-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('ro-' + id)?.classList.add('selected');
+}
+
+let signupPhotoBase64 = null;
+
+function previewPhoto(input) {
+  const preview = document.getElementById('photo-preview');
+  const errEl = document.getElementById('err');
+  
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    
+    // Validate size (100KB = 102400 bytes)
+    if (file.size > 102400) {
+      errEl.textContent = '⚠ Photo must be 100KB or smaller';
+      input.value = '';
+      preview.innerHTML = '<span style="font-size:24px; opacity:0.3;">👤</span>';
+      signupPhotoBase64 = null;
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+      signupPhotoBase64 = e.target.result;
+      errEl.textContent = '';
+    };
+    reader.readAsDataURL(file);
+  } else {
+    preview.innerHTML = '<span style="font-size:24px; opacity:0.3;">👤</span>';
+    signupPhotoBase64 = null;
+  }
+}
+
+let resendInterval = null;
+function startResendTimer() {
+  let timeLeft = 60;
+  const btn = document.getElementById('resend-btn');
+  const timer = document.getElementById('resend-timer');
+  btn.disabled = true;
+  timer.style.display = 'inline';
+  
+  if (resendInterval) clearInterval(resendInterval);
+  resendInterval = setInterval(() => {
+    timeLeft--;
+    timer.textContent = `(${timeLeft}s)`;
+    if (timeLeft <= 0) {
+      clearInterval(resendInterval);
+      btn.disabled = false;
+      timer.style.display = 'none';
+    }
+  }, 1000);
+}
+
+async function resendOTP() {
+  const email = document.getElementById('r-email').value.trim();
+  const btn = document.getElementById('resend-btn');
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner spinner-dark" style="border-top-color:var(--accent)"></span> Resending...';
+  
+  try {
+    const res = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to resend OTP');
+      alert('Verification code resent successfully!');
+      startResendTimer();
+    } else {
+      const text = await res.text();
+      console.error('Server returned non-JSON:', text);
+      throw new Error('Server error (Invalid Response). Please try again later.');
+    }
+  } catch (e) {
+    alert('⚠ ' + e.message);
+  } finally {
+    btn.innerHTML = originalHtml;
+  }
+}
+
+async function submit() {
+  const name = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const usn = document.getElementById('r-usn').value.trim();
+  const phone = document.getElementById('r-phone').value.trim();
+  const err = document.getElementById('err');
+  if (!name) { err.textContent = '⚠ Name required'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = '⚠ Valid email required'; return; }
+  if (!usn) { err.textContent = '⚠ USN (Reg No.) required'; return; }
+  if (!signupPhotoBase64) { err.textContent = '⚠ Profile photo is required'; return; }
+  if (selectedType === 'volunteer' && !selectedRoleId) { err.textContent = '⚠ Please select a role'; return; }
+  
+  const isTeam = selectedType === 'participant' && eventData?.teamMode === 'team';
+  if (isTeam) {
+    const tName = document.getElementById('r-team-name').value.trim();
+    if (!tName) { err.textContent = '⚠ Team Name required'; return; }
+    if (!document.getElementById('r-password').value.trim()) { err.textContent = '⚠ Password required'; return; }
+  }
+
+  err.textContent = '';
+  
+  // Check volunteer limit before sending OTP
+  if (selectedType === 'volunteer') {
+    try {
+      const checkRes = await fetch(`/api/registrations/check-limit?email=${encodeURIComponent(email)}&usn=${encodeURIComponent(usn)}`);
+      if (checkRes.ok) {
+        const { volCount } = await checkRes.json();
+        if (volCount >= 2) {
+          err.textContent = '⚠ You are already registered as volunteer for 2 events';
+          return;
+        }
+      }
+    } catch (e) { console.error('Limit check failed:', e); }
+  }
+
+  document.getElementById('btn-txt').innerHTML = '<span class="spinner"></span> Sending OTP...';
+  try {
+    const res = await fetch('/api/auth/send-otp', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
+      
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('verify-section').style.display = 'block';
+      document.getElementById('display-email').textContent = email;
+      startResendTimer();
+    } else {
+      const text = await res.text();
+      console.error('Server returned non-JSON:', text);
+      throw new Error('Server error (Invalid Response). Please try again later.');
+    }
+  } catch(e) { err.textContent = '⚠ ' + e.message; }
+  document.getElementById('btn-txt').textContent = 'Send Verification Code';
+}
+
+async function verifyAndRegister() {
+  const name = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const usn = document.getElementById('r-usn').value.trim();
+  const phone = document.getElementById('r-phone').value.trim();
+  const otp = document.getElementById('r-otp').value.trim();
+  const password = document.getElementById('r-password').value.trim();
+  const btnTxt = document.getElementById('verify-btn-txt');
+  
+  if (!otp || otp.length !== 6) { alert('Please enter the 6-digit code'); return; }
+
+  let teamDetails = null;
+  const isTeam = selectedType === 'participant' && eventData?.teamMode === 'team';
+  if (isTeam) {
+    teamDetails = { teamName: document.getElementById('r-team-name').value.trim() };
+  }
+
+  btnTxt.innerHTML = '<span class="spinner"></span> Verifying...';
+  try {
+    // 1. Verify OTP
+    const vor = await fetch('/api/auth/verify-otp', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, otp }) });
+    const voContentType = vor.headers.get("content-type");
+    if (voContentType && voContentType.indexOf("application/json") !== -1) {
+      const vod = await vor.json();
+      if (!vor.ok) throw new Error(vod.error || 'Invalid OTP');
+    } else {
+      const text = await vor.text();
+      console.error('Verify OTP: Server returned non-JSON:', text);
+      throw new Error('Server error during verification. Please try again.');
+    }
+
+    // 2. Register
+    const r = await fetch('/api/registrations', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ eventId, name, email, usn, phone, password, type: selectedType, roleId: selectedRoleId, teamDetails, photo: signupPhotoBase64 }) });
+    const rContentType = r.headers.get("content-type");
+    if (rContentType && rContentType.indexOf("application/json") !== -1) {
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Registration failed');
+      
+      document.getElementById('verify-section').style.display = 'none';
+      const sc = document.getElementById('success-card');
+      sc.classList.add('show');
+      const roleInfo = selectedType === 'volunteer' ? ` as a volunteer${d.roleName ? ` (${d.roleName})` : ''}` : ' as a participant';
+      document.getElementById('success-msg').textContent = `${name}, you're registered${roleInfo} for ${d.eventTitle || eventData?.title}!`;
+    } else {
+      const text = await r.text();
+      console.error('Registration: Server returned non-JSON:', text);
+      throw new Error('Server error during registration. Please try again.');
+    }
+  } catch(e) { alert('⚠ ' + e.message); }
+  btnTxt.textContent = 'Verify & Register';
+}
+
+function backToForm() {
+  document.getElementById('signup-form').style.display = 'block';
+  document.getElementById('verify-section').style.display = 'none';
+}
+
+init();
+</script>
+</body>
+</html>

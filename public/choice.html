@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Choice — EventVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#2d5be3;--accent3:#2da868;--bg:#f4f6ff;--surface:#fff;--border:#e2e8f0;--text:#1a2040;--text2:#64748b;--ease: cubic-bezier(0.4, 0, 0.2, 1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x: hidden;}
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.hero{background:linear-gradient(135deg,#1a2d6b,#2d5be3);padding:15px 20px;text-align:center;color:#fff;animation: fadeIn 1s var(--ease);}
+.logo{font-family:'Fraunces',serif;font-size:20px;font-weight:700;margin-bottom:4px;transition: transform 0.3s var(--ease);}
+.logo:hover { transform: scale(1.05); }
+.logo span{opacity:0.7}
+.hero h1{font-family:'Fraunces',serif;font-size:28px;font-weight:700;margin:4px 0 4px;line-height:1.2;animation: slideUp 0.8s var(--ease) 0.2s both;}
+.hero-meta{display:flex;flex-direction:row;gap:12px;justify-content:center;align-items:center;margin:5px 0;animation: fadeIn 1s var(--ease) 0.4s both;flex-wrap:wrap;}
+.hero-meta-item{display:flex;align-items:center;gap:8px;font-size:14px;opacity:0.9;font-family:'Space Mono',monospace}
+.container{max-width:520px;margin:0 auto;padding:40px 16px;flex:1}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;margin-bottom:24px;box-shadow:0 10px 30px rgba(0,0,0,0.06);text-align:center;animation: slideUp 0.8s var(--ease) 0.5s both;}
+.card h2{font-size:18px;font-weight:800;margin-bottom:24px;color:var(--text2);letter-spacing: -0.5px;}
+.choice-btns{display:flex;flex-direction:column;gap:16px}
+.choice-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;border-radius:20px;border:2px solid var(--border);background:var(--surface);cursor:pointer;transition:all 0.4s var(--ease);text-align:center;text-decoration:none;color:inherit;position: relative; overflow: hidden;}
+.choice-btn:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 15px 35px rgba(45,91,227,0.1)}
+.choice-btn:active{transform:translateY(-2px) scale(0.98);}
+.choice-btn-icon{font-size:36px;margin-bottom:4px;transition: transform 0.3s var(--ease);}
+.choice-btn:hover .choice-btn-icon { transform: scale(1.2) rotate(10deg); }
+.choice-btn-title{font-size:18px;font-weight:800;color:var(--text)}
+.choice-btn-sub{font-size:13px;color:var(--text2);line-height: 1.4;}
+.btn-primary-choice{border-color:var(--accent);background:rgba(45,91,227,0.02)}
+.btn-primary-choice:hover{background:rgba(45,91,227,0.05)}
+.btn-secondary-choice{border-color:var(--accent3);background:rgba(45,168,104,0.02)}
+.btn-secondary-choice:hover{border-color:var(--accent3);background:rgba(45,168,104,0.05);box-shadow:0 15px 35px rgba(45,168,104,0.1)}
+.cat-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;margin-bottom:12px}
+.footer-link{text-align:center;margin-top:auto;padding-bottom:40px;font-size:14px;color:var(--text2);animation: fadeIn 1s var(--ease) 0.8s both;}
+.footer-link a{color:var(--accent);font-weight:600;text-decoration:none; transition: color 0.3s;}
+.footer-link a:hover { color: #2450cc; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div style="position: absolute; top: 15px; left: 20px; z-index: 10;">
+    <a href="/events.html" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer; text-decoration: none;" title="Go Back to Events">←</a>
+  </div>
+  <div class="logo" style="margin-bottom:4px">EventVault</div>
+  <div id="hero-cat" class="cat-badge">Loading...</div>
+  <h1 id="hero-title">Loading event...</h1>
+  <div class="hero-meta">
+    <div class="hero-meta-item">📅 <span id="hero-date"></span></div>
+    <div class="hero-meta-item">📍 <span id="hero-loc"></span></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>How would you like to register?</h2>
+    <div class="choice-btns">
+      <a href="#" id="volunteer-link" class="choice-btn btn-primary-choice">
+        <div class="choice-btn-icon">🤝</div>
+        <div class="choice-btn-title">Register as Volunteer</div>
+        <div class="choice-btn-sub">Help us organize and manage the event</div>
+      </a>
+      <a href="#" id="participant-link" class="choice-btn btn-secondary-choice">
+        <div class="choice-btn-icon">🎟️</div>
+        <div class="choice-btn-title">Register as Participant</div>
+        <div class="choice-btn-sub">Attend and enjoy the event activities</div>
+      </a>
+    </div>
+  </div>
+  <div class="footer-link"><a href="/events.html">Back to Browse All Events</a></div>
+</div>
+
+<script>
+const eventId = location.pathname.split('/choice/')[1];
+
+async function init() {
+  try {
+    const r = await fetch(`/api/events/${eventId}`);
+    const ev = await r.json();
+    if (!r.ok) throw new Error(ev.error);
+    
+    document.title = 'Choice: ' + ev.title + ' — EventVault';
+    document.getElementById('hero-cat').textContent = ev.category || 'General';
+    document.getElementById('hero-title').textContent = ev.title;
+    document.getElementById('hero-date').textContent = new Date(ev.date).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('hero-loc').textContent = ev.location;
+    
+    document.getElementById('volunteer-link').href = `/signup/${eventId}?type=volunteer`;
+    document.getElementById('participant-link').href = `/signup/${eventId}?type=participant`;
+  } catch(e) {
+    document.getElementById('hero-title').textContent = 'Event not found';
+  }
+}
+
+init();
+</script>
+</body>
+</html>

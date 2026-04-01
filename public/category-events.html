@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventVault — Category Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --surface2: #f4f3ef;
+  --border: #e8e6df;
+  --text: #1a1916;
+  --text2: #6b6860;
+  --text3: #b0aea8;
+  --accent: #2d5be3;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Nunito',sans-serif; overflow-x: hidden; }
+a { color:inherit; text-decoration:none; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+header {
+  background:var(--surface); border-bottom:1px solid var(--border);
+  padding:0 40px;
+}
+.header-inner { display:flex; align-items:center; justify-content:space-between; height:64px; max-width:1200px; margin:0 auto; }
+.logo { font-family:'Fraunces',serif; font-size:22px; font-weight:700; letter-spacing:-0.5px; }
+.logo span { color:var(--accent); }
+
+.container { max-width:1200px; margin:0 auto; padding:40px; }
+.section-header { margin-bottom:32px; display: flex; align-items: center; justify-content: space-between; }
+.section-title { font-family:'Fraunces',serif; font-size:32px; font-weight:700; }
+.section-title em { color:var(--accent); font-style:italic; }
+
+.filters { display:flex; gap:12px; margin-bottom:32px; }
+.filter-chip { padding:10px 24px; border-radius:30px; border:2px solid var(--border); background:var(--surface); font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.filter-chip:hover { border-color:var(--accent); color:var(--accent); }
+.filter-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+.events-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; }
+.event-card {
+  background: #ffffff;
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow:hidden; transition:all 0.3s;
+  display:flex; flex-direction:column;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.event-card:hover { transform:translateY(-5px); }
+.event-card::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: var(--bg-img); background-size: cover; background-position: center;
+  opacity: 0.1; z-index: 0; transition: opacity 0.3s;
+}
+.event-card:hover::before { opacity: 0.15; }
+.event-card-top { padding:16px; flex-grow:1; position: relative; z-index: 1; }
+.event-card-cat { display:inline-block; font-size:9px; font-weight:800; letter-spacing:1px; text-transform:uppercase; padding:4px 10px; border-radius:30px; background: var(--surface2); margin-bottom:10px; }
+.event-card h3 { font-size:18px; font-weight:800; margin-bottom:10px; font-family: 'Fraunces', serif; }
+.event-meta { font-size:12px; color:var(--text2); margin-bottom:10px; display:flex; flex-direction:column; gap:4px; }
+.event-meta-item { display:flex; align-items:center; gap:8px; }
+
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; font-weight:700; font-size:13px; cursor:pointer; transition:all 0.2s; border:none; text-decoration:none; }
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-outline { background:transparent; border:2px solid var(--border); color:var(--text2); }
+
+.empty-state { text-align:center; padding:80px 20px; grid-column: 1 / -1; }
+.empty-icon { font-size:64px; margin-bottom:16px; opacity: 0.5; }
+
+@media(max-width:768px) {
+  header, .container { padding:0 20px; }
+  .section-title { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">Event<span>Vault</span></a>
+    <a href="/" class="btn btn-outline btn-sm">← Back to Home</a>
+  </div>
+</header>
+
+<div class="container">
+  <div class="section-header">
+    <h1 class="section-title"><span id="category-name">Category</span> <em>Events</em></h1>
+  </div>
+
+  <div class="filters">
+    <button class="filter-chip active" onclick="setScope('inhouse', this)">Inhouse</button>
+    <button class="filter-chip" onclick="setScope('outhouse', this)">Outhouse</button>
+  </div>
+
+  <div class="events-grid" id="events-grid">
+    <!-- Events will be loaded here -->
+  </div>
+</div>
+
+<script>
+const API = '/api';
+const params = new URLSearchParams(window.location.search);
+const category = params.get('cat') || 'General';
+let currentScope = 'inhouse'; // Default to inhouse
+let allEvents = [];
+
+document.getElementById('category-name').textContent = category;
+
+async function loadEvents() {
+  try {
+    const r = await fetch(API + '/events');
+    allEvents = await r.json();
+    if (currentScope) renderEvents();
+  } catch(e) { console.error(e); }
+}
+
+function setScope(scope, el) {
+  currentScope = scope;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderEvents();
+}
+
+function renderEvents() {
+  if (!currentScope) return;
+  const now = new Date();
+  const list = allEvents.filter(e => 
+    (e.category || '').toLowerCase() === category.toLowerCase() && 
+    (e.scope || 'inhouse') === currentScope &&
+    new Date(e.date).setHours(23, 59, 59, 999) >= now
+  );
+
+  const grid = document.getElementById('events-grid');
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📅</div>
+      <div style="font-size:18px; font-weight:600;">No ${currentScope} events found for ${category}</div>
+      <p style="color:var(--text2); margin-top:8px;">Check back later or try the other category!</p>
+    </div>`;
+    return;
+  }
+
+  const imageMap = {
+    'technical': 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
+    'sports': 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80',
+    'cultural': 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80',
+    'academic': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80',
+    'academics': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80',
+    'education': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80',
+    'community': 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80',
+    'community-based': 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80',
+    'community based': 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80',
+    'general': 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=800&q=80'
+  };
+
+  grid.innerHTML = list.map(ev => {
+    // Ensure we always have a background image with case-insensitive lookup
+    const lookupCat = (ev.category || 'general').trim().toLowerCase();
+    const eventImg = imageMap[lookupCat] || imageMap['general'];
+    const evDate = new Date(ev.date);
+    
+    return `
+    <div class="event-card" onclick="window.location.href='/choice/${ev.eventId}'" style="--bg-img: url('${eventImg}')">
+      <div class="event-card-top">
+        <div class="event-card-cat">${ev.category}</div>
+        <h3>${ev.title}</h3>
+        <div class="event-meta">
+          <div class="event-meta-item"><span>📅</span> ${evDate.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}</div>
+          <div class="event-meta-item"><span>🕐</span> ${ev.time}</div>
+          <div class="event-meta-item"><span>📍</span> ${ev.location}</div>
+        </div>
+        <p style="font-size:13px; color:var(--text2); line-height:1.5; margin-bottom:16px; height: 40px; overflow: hidden;">${ev.description || 'No description provided.'}</p>
+        <button class="btn btn-primary" onclick="event.stopPropagation(); window.location.href='/choice/${ev.eventId}'" style="width:100%; justify-content:center;">Register Now →</button>
+      </div>
+    </div>
+  `}).join('');
+}
+
+loadEvents();
+</script>
+</body>
+</html>

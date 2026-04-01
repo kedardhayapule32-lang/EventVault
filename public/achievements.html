@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventVault — Achievements & Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --surface2: #f4f3ef;
+  --border: #e8e6df;
+  --text: #1a1916;
+  --text2: #6b6860;
+  --text3: #b0aea8;
+  --accent: #2d5be3;
+  --accent2: #e35d2d;
+  --accent3: #2da868;
+  --accent4: #e3a82d;
+  --gold: #e3a82d;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Nunito',sans-serif; overflow-x: hidden; }
+a { color:inherit; text-decoration:none; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-fade { animation: fadeIn 0.6s var(--ease); }
+.animate-slide-up { animation: slideUp 0.6s var(--ease) both; }
+
+/* HEADER */
+header {
+  background:rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); 
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:100; padding:0 40px;
+}
+.header-inner { display:flex; align-items:center; justify-content:space-between; height:64px; max-width:1200px; margin:0 auto; }
+.logo { font-family:'Fraunces',serif; font-size:22px; font-weight:700; letter-spacing:-0.5px; }
+.logo span { color:var(--accent); }
+.btn-back { font-size: 14px; font-weight: 700; color: var(--text2); display: flex; align-items: center; gap: 8px; cursor: pointer; transition: color 0.3s; }
+.btn-back:hover { color: var(--accent); }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+  padding:60px 40px; text-align:center; color:var(--text); border-bottom: 1px solid var(--border);
+}
+.hero h1 { font-family:'Fraunces',serif; font-size:36px; font-weight:800; margin-bottom:12px; }
+.hero p { font-size:16px; color: var(--text2); max-width: 600px; margin: 0 auto; }
+
+/* MAIN CONTENT */
+.container { max-width:1200px; margin:0 auto; padding:40px; }
+.category-section { margin-bottom: 60px; scroll-margin-top: 100px; }
+.section-title { font-family:'Fraunces',serif; font-size:28px; font-weight:700; margin-bottom:32px; position: relative; display: flex; align-items: center; gap: 12px; }
+.section-title::after { content: ''; flex-grow: 1; height: 1px; background: var(--border); margin-left: 20px; }
+.section-title span { color: var(--gold); }
+
+/* CATEGORY NAV */
+.cat-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; justify-content: center; }
+.cat-link { padding: 8px 20px; border-radius: 20px; background: #fff; border: 1.5px solid var(--border); font-size: 13px; font-weight: 700; color: var(--text2); transition: all 0.3s; cursor: pointer; }
+.cat-link:hover, .cat-link.active { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+.cat-link.active { background: #fffbeb; }
+
+/* RESULTS GRID */
+.results-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(350px,1fr)); gap:32px; }
+.result-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 24px;
+  overflow:hidden; box-shadow: var(--shadow); transition: all 0.4s var(--ease);
+  display: flex; flex-direction: column;
+}
+.result-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--gold); }
+
+.result-header { padding:24px; background: rgba(227,168,45,0.05); border-bottom: 1px solid var(--border); }
+.result-cat { font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color: var(--gold); margin-bottom:8px; font-family:'Space Mono',monospace; }
+.result-card h3 { font-family:'Fraunces',serif; font-size:22px; font-weight:700; color: var(--text); margin-bottom:4px; }
+.result-date { font-size:13px; color: var(--text3); font-family:'Space Mono',monospace; }
+
+.result-body { padding:24px; flex-grow: 1; }
+
+/* WINNER STYLES */
+.winner-row { display:flex; align-items:center; gap:16px; margin-bottom:16px; padding:12px; border-radius:16px; background: var(--bg); transition: all 0.3s; }
+.winner-row:hover { background: #fffbeb; transform: translateX(5px); }
+.rank-icon { font-size:24px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:12px; flex-shrink:0; }
+.rank-1 { background:#fef3c7; color:#d97706; }
+.rank-2 { background:#f3f4f6; color:#4b5563; }
+.rank-3 { background:#ffedd5; color:#c2410c; }
+
+.winner-info { flex-grow:1; }
+.winner-name { font-weight:800; font-size:16px; color: var(--text); }
+.winner-sub { font-size:12px; color: var(--text2); font-family:'Space Mono',monospace; margin-top:2px; }
+
+.team-winner { border-left: 4px solid var(--gold); }
+.team-label { font-size:11px; font-weight:800; color: var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+
+/* FILTERS */
+.search-bar { width: 100%; padding: 14px 20px; border-radius: 16px; border: 2px solid var(--border); background: #fff; font-family: inherit; font-size: 15px; margin-bottom: 32px; outline: none; transition: all 0.3s; }
+.search-bar:focus { border-color: var(--gold); box-shadow: 0 8px 24px rgba(227,168,45,0.1); }
+
+/* EMPTY STATE */
+.empty-state { text-align:center; padding:80px 20px; color:var(--text2); }
+.empty-icon { font-size:64px; margin-bottom:16px; }
+
+@media(max-width:768px) {
+  header { padding:0 20px; }
+  .container { padding:20px; }
+  .results-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">Event<span>Vault</span></div>
+    <a href="/" class="btn-back">← Back to Home</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="animate-slide-up">
+    <h1>Event Achievements</h1>
+    <p style="margin-bottom: 24px;">Celebrating the excellence and participation of our student community in Biluru Gurubasava Mahaswamiji Institute of Technology.</p>
+    <button class="cat-link" style="display:inline-flex; align-items:center; gap:8px; padding: 12px 28px; font-size: 15px; background:var(--gold); color:#fff; border:none;" onclick="sharePage()">
+      <span style="font-size:18px">🔗</span> Share Achievements
+    </button>
+  </div>
+</section>
+
+<div class="container">
+  <input type="text" class="search-bar" id="search-input" placeholder="Search by event, category, or winner name..." oninput="renderResults()">
+  
+  <div class="cat-nav" id="cat-nav">
+    <!-- Category links will be loaded here -->
+  </div>
+
+  <div id="results-container">
+    <!-- Category sections will be loaded here -->
+  </div>
+</div>
+
+<script>
+const API = '/api';
+let allResults = [];
+let selectedCategory = 'All';
+const categories = ['General', 'Technical', 'Cultural', 'Sports', 'Academic', 'Community'];
+
+async function loadResults() {
+  try {
+    const response = await fetch(API + '/events?hasResults=true');
+    allResults = await response.json();
+    renderResults();
+  } catch (e) {
+    console.error('Failed to load results:', e);
+    document.getElementById('results-container').innerHTML = '<div class="empty-state">⚠️ Error loading achievements. Please try again later.</div>';
+  }
+}
+
+function setCategory(cat) {
+  selectedCategory = cat;
+  renderResults();
+}
+
+function renderResults() {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  const container = document.getElementById('results-container');
+  const nav = document.getElementById('cat-nav');
+  
+  // Enhanced Search Logic
+  let filtered = allResults.filter(ev => {
+    const title = (ev.title || '').toLowerCase();
+    const cat = (ev.category || 'General').toLowerCase();
+    const res = ev.results || {};
+    
+    // Check winner names
+    let winnerMatch = false;
+    if (res.type === 'individual') {
+      winnerMatch = (res.winners || []).some(w => {
+        if (!w) return false;
+        const name = typeof w === 'object' ? w.name : w;
+        return name.toLowerCase().includes(query);
+      });
+    } else if (res.type === 'team') {
+      const winner = res.winner || {};
+      const runner = res.runner || {};
+      winnerMatch = (winner.teamName || '').toLowerCase().includes(query) || 
+                    (winner.members || '').toLowerCase().includes(query) ||
+                    (runner.teamName || '').toLowerCase().includes(query) ||
+                    (runner.members || '').toLowerCase().includes(query);
+    }
+
+    return title.includes(query) || cat.includes(query) || winnerMatch;
+  });
+
+  // Category Filter Logic
+  if (selectedCategory !== 'All') {
+    filtered = filtered.filter(ev => (ev.category || 'General').toLowerCase() === selectedCategory.toLowerCase());
+  }
+
+  // Render Nav - Case Insensitive Filtering
+  const activeCats = ['All', ...categories.filter(cat => 
+    allResults.some(ev => (ev.category || 'General').toLowerCase() === cat.toLowerCase())
+  )];
+  nav.innerHTML = activeCats.map(cat => `
+    <div class="cat-link ${selectedCategory === cat ? 'active' : ''}" onclick="setCategory('${cat}')">${cat}</div>
+  `).join('');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">🏆</div><div>No results found ${selectedCategory !== 'All' ? 'in ' + selectedCategory : ''}.</div></div>`;
+    return;
+  }
+
+  // Group by category for display
+  const grouped = {};
+  const catsToDisplay = selectedCategory === 'All' ? categories : [selectedCategory];
+  
+  catsToDisplay.forEach(cat => grouped[cat] = []);
+  
+  filtered.forEach(ev => {
+    const cat = ev.category || 'General';
+    if (grouped[cat]) grouped[cat].push(ev);
+    else if (selectedCategory === 'All') {
+        if (!grouped['General']) grouped['General'] = [];
+        grouped['General'].push(ev);
+    }
+  });
+
+  const finalCats = catsToDisplay.filter(cat => grouped[cat] && grouped[cat].length > 0);
+
+  // Render Sections
+  container.innerHTML = finalCats.map(cat => {
+    const events = grouped[cat];
+    const categoryIcon = cat === 'Technical' ? '⚙️' : cat === 'Cultural' ? '🎭' : cat === 'Sports' ? '🏆' : cat === 'Community' ? '🤝' : '✨';
+    
+    return `
+      <div class="category-section" id="cat-${cat.toLowerCase()}">
+        <h2 class="section-title"><span>${categoryIcon}</span> ${cat} <em>Results</em></h2>
+        <div class="results-grid">
+          ${events.map(ev => renderEventCard(ev)).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderEventCard(ev) {
+  const res = ev.results;
+  let content = '';
+  
+  if (res.type === 'individual') {
+    content = (res.winners || []).map((winner, i) => {
+      if (!winner) return '';
+      const rank = i + 1;
+      const icon = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
+      const name = typeof winner === 'object' ? winner.name : winner;
+      const photo = typeof winner === 'object' ? winner.photo : null;
+      
+      return `
+        <div class="winner-row">
+          <div class="rank-icon rank-${rank}">${icon}</div>
+          <div class="winner-photo" style="width:40px; height:40px; border-radius:50%; overflow:hidden; border:2px solid var(--accent); margin-right:12px; background:#f0f0f0; flex-shrink:0;">
+            ${photo ? `<img src="${photo}" style="width:100%; height:100%; object-fit:cover;">` : '<div style="text-align:center; font-size:16px; line-height:40px; opacity:0.3;">👤</div>'}
+          </div>
+          <div class="winner-info">
+            <div class="winner-name">${name}</div>
+            <div class="winner-sub">${rank}${rank===1?'st':rank===2?'nd':'rd'} Place Winner</div>
+          </div>
+        </div>`;
+    }).join('');
+  } else {
+    const winner = res.winner || {};
+    const runner = res.runner || {};
+    content = `
+      <div class="winner-row team-winner">
+        <div class="rank-icon rank-1">🏆</div>
+        <div class="winner-info">
+          <div class="team-label">Winner</div>
+          <div class="winner-name">${winner.teamName || '—'}</div>
+          <div class="winner-sub">${winner.members || 'Team Members'}</div>
+        </div>
+      </div>
+      <div class="winner-row" style="border-left: 4px solid var(--text3)">
+        <div class="rank-icon rank-2">🥈</div>
+        <div class="winner-info">
+          <div class="team-label" style="color:var(--text3)">Runner-Up</div>
+          <div class="winner-name">${runner.teamName || '—'}</div>
+          <div class="winner-sub">${runner.members || 'Team Members'}</div>
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div class="result-card animate-fade">
+      <div class="result-header">
+        <div class="result-cat">${ev.category || 'General'}</div>
+        <h3>${ev.title}</h3>
+        <div class="result-date">${new Date(ev.date).toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'})}</div>
+      </div>
+      <div class="result-body">
+        ${content}
+      </div>
+    </div>`;
+}
+
+async function sharePage() {
+  const shareData = {
+    title: 'EventVault — Achievements & Results',
+    text: 'Check out the latest event achievements and winners at BGMIT!',
+    url: window.location.href
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  } catch (err) {
+    console.log('Error sharing:', err);
+  }
+}
+
+loadResults();
+</script>
+</body>
+</html>

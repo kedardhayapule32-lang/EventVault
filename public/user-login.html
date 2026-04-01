@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Login — EventVault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=Fraunces:ital,wght@0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --surface2: #f4f3ef;
+  --border: #e8e6df;
+  --text: #1a1916;
+  --text2: #6b6860;
+  --accent: #2d5be3;
+  --radius: 20px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Nunito',sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; overflow-x: hidden; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  animation: slideUp 0.8s var(--ease);
+  position: relative;
+}
+.back-home {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s var(--ease);
+}
+.back-home:hover { color: var(--accent); transform: translateX(-4px); }
+
+.logo { font-family:'Fraunces',serif; font-size:28px; font-weight:700; margin-bottom:8px; text-align: center; }
+.logo span { color:var(--accent); }
+.subtitle { text-align: center; color: var(--text2); margin-bottom: 36px; font-size: 14px; font-family: 'Space Mono', monospace; }
+
+.form-group { margin-bottom: 24px; }
+.form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
+.form-group input { 
+  width: 100%; 
+  background: var(--surface2); 
+  border: 2px solid transparent; 
+  border-radius: 12px; 
+  padding: 12px 16px; 
+  color: var(--text); 
+  font-family: 'Nunito', sans-serif; 
+  font-size: 15px; 
+  outline: none; 
+  transition: all 0.3s var(--ease); 
+}
+.form-group input:focus { border-color: var(--accent); background: #fff; box-shadow: 0 4px 16px rgba(45,91,227,0.08); }
+
+.btn { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px; 
+  width: 100%; 
+  padding: 14px; 
+  border-radius: 12px; 
+  font-family: 'Nunito', sans-serif; 
+  font-weight: 800; 
+  font-size: 16px; 
+  cursor: pointer; 
+  border: none; 
+  transition: all 0.3s var(--ease); 
+  background: var(--accent); 
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(45,91,227,0.2);
+}
+.btn:hover { background: #2450cc; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(45,91,227,0.3); }
+.btn:active { transform: scale(0.98); }
+
+.error-msg { color: #dc2626; font-size: 13px; margin-top: 16px; text-align: center; font-family: 'Space Mono', monospace; display: none; }
+
+.info-text { margin-top: 24px; text-align: center; font-size: 13px; color: var(--text2); line-height: 1.6; }
+.info-text strong { color: var(--text); }
+
+.spinner { display:inline-block; width:16px; height:16px; border:3px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin .8s linear infinite }
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <a href="/" class="back-home">← Back</a>
+  <div class="logo">Event<span>Vault</span></div>
+  <div class="subtitle">User Portal</div>
+  
+  <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" id="user-email" placeholder="Enter your email" autocomplete="email">
+  </div>
+  
+  <div class="form-group">
+    <label>USN / Reg No.</label>
+    <input type="text" id="user-usn" placeholder="Enter your USN" autocomplete="off">
+  </div>
+
+  <!-- OTP for Login -->
+  <div id="login-otp-container" style="display:none; margin-bottom:24px; padding:16px; background:#f0f4ff; border-radius:12px; border:2px solid var(--accent)">
+    <label style="display:block; font-size:11px; font-weight:700; color:var(--accent); margin-bottom:8px; text-transform:uppercase">Verification Code</label>
+    <div style="font-size:12px; color:var(--text2); margin-bottom:12px">Check your Gmail for OTP</div>
+    <input type="text" id="login-otp" placeholder="000000" maxlength="6" style="text-align:center; letter-spacing:8px; font-size:24px; font-weight:bold; width:100%; border:none; background:none; outline:none">
+  </div>
+  
+  <button class="btn" id="login-main-btn" onclick="handleLoginClick()">
+    <span id="btn-text">Send Verification Code</span>
+  </button>
+  
+  <div style="margin-top:20px; text-align:center; font-size:14px; color:var(--text2)">
+    New user? <a href="/user-signup" style="color:var(--accent); text-decoration:none; font-weight:600">Create an account</a>
+  </div>
+  
+  <div id="error" class="error-msg"></div>
+  
+  <div class="info-text">
+    Login to view your <strong>Volunteer</strong> and <strong>Participant</strong> registrations across all events.
+  </div>
+</div>
+
+<script>
+let loginStep = 'form';
+
+async function handleLoginClick() {
+  if (loginStep === 'form') {
+    await sendOTP();
+  } else {
+    await verifyOTP();
+  }
+}
+
+async function sendOTP() {
+  const email = document.getElementById('user-email').value.trim();
+  const usn = document.getElementById('user-usn').value.trim();
+  const errEl = document.getElementById('error');
+  const btnText = document.getElementById('btn-text');
+  
+  if (!email || !usn) {
+    errEl.textContent = 'Please fill in all fields';
+    errEl.style.display = 'block';
+    return;
+  }
+  
+  errEl.style.display = 'none';
+  btnText.innerHTML = '<span class="spinner"></span> Sending OTP...';
+  
+  try {
+    // Check if user exists first (optional but good)
+    const profileRes = await fetch(`/api/auth/user-profile?email=${encodeURIComponent(email)}&usn=${encodeURIComponent(usn)}`);
+    const r = await fetch(`/api/registrations/my?email=${encodeURIComponent(email)}`);
+    if (!profileRes.ok && !(await r.json()).length) {
+      throw new Error('No account or registration found for this Email and USN');
+    }
+
+    const otpRes = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (!otpRes.ok) throw new Error('Failed to send verification code');
+
+    loginStep = 'otp';
+    document.getElementById('login-otp-container').style.display = 'block';
+    btnText.textContent = 'Verify & Sign In';
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+    btnText.textContent = 'Send Verification Code';
+  }
+}
+
+async function verifyOTP() {
+  const email = document.getElementById('user-email').value.trim();
+  const usn = document.getElementById('user-usn').value.trim();
+  const otp = document.getElementById('login-otp').value.trim();
+  const errEl = document.getElementById('error');
+  const btnText = document.getElementById('btn-text');
+
+  if (!otp || otp.length !== 6) {
+    errEl.textContent = 'Please enter the 6-digit code';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  errEl.style.display = 'none';
+  btnText.innerHTML = '<span class="spinner"></span> Verifying...';
+
+  try {
+    const verifyRes = await fetch('/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp })
+    });
+    if (!verifyRes.ok) throw new Error('Invalid or expired code');
+
+    sessionStorage.setItem('user_email', email);
+    sessionStorage.setItem('user_usn', usn);
+    window.location.href = '/?tab=my';
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+    btnText.textContent = 'Verify & Sign In';
+  }
+}
+</script>
+
+</body>
+</html>

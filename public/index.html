@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventVault — Events & Volunteering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --surface2: #f4f3ef;
+  --border: #e8e6df;
+  --text: #1a1916;
+  --text2: #6b6860;
+  --text3: #b0aea8;
+  --accent: #2d5be3;
+  --accent2: #e35d2d;
+  --accent3: #2da868;
+  --accent4: #e3a82d;
+  --brand-red: #8b0000;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Nunito',sans-serif; overflow-x: hidden; }
+a { color:inherit; text-decoration:none; }
+::selection { background:var(--accent); color:#fff; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+.event-title-animated {
+  font-family: 'Fraunces', serif;
+  font-size: 96px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin: 24px 0;
+  background: linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 3px;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  display: inline-block;
+}
+
+.animate-fade { animation: fadeIn 0.6s var(--ease); }
+.animate-slide-up { animation: slideUp 0.6s var(--ease) both; }
+.animate-scale { animation: scaleIn 0.4s var(--ease); }
+
+/* HEADER */
+header {
+  background:rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); 
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:100; padding:0 40px;
+  transition: all 0.3s var(--ease);
+}
+header.scrolled { padding: 0 20px; box-shadow: var(--shadow); }
+
+.header-inner { display:flex; align-items:center; justify-content:space-between; height:64px; max-width:1200px; margin:0 auto; }
+.logo { font-family:'Fraunces',serif; font-size:22px; font-weight:700; letter-spacing:-0.5px; transition: transform 0.3s var(--ease); }
+.logo:hover { transform: scale(1.05); }
+.logo span { color:var(--accent); }
+.header-nav { display:flex; align-items:center; gap:24px; }
+.nav-link { font-size:14px; font-weight:600; color:var(--text2); cursor:pointer; padding:6px 0; border-bottom:2px solid transparent; transition:all 0.3s var(--ease); }
+.nav-link:hover, .nav-link.active { color:var(--accent); border-bottom-color:var(--accent); }
+.header-actions { display:flex; gap:10px; align-items:center; }
+.btn { display:inline-flex; align-items:center; gap:6px; padding:9px 20px; border-radius:10px; font-family:'Nunito',sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:all 0.3s var(--ease); border:none; text-decoration:none; position: relative; overflow: hidden; }
+.btn::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0); transition: background 0.3s; }
+.btn:active { transform: scale(0.96); }
+.btn-primary { background:var(--accent); color:#fff; box-shadow: 0 4px 12px rgba(45,91,227,0.2); }
+.btn-primary:hover { background:#2450cc; transform:translateY(-2px); box-shadow:0 6px 20px rgba(45,91,227,0.3); }
+.btn-outline { background:transparent; border:2px solid var(--border); color:var(--text2); }
+.btn-outline:hover { border-color:var(--accent); color:var(--accent); background: rgba(45,91,227,0.04); }
+.btn-sm { padding:6px 14px; font-size:13px; }
+.btn-danger { background:#fef2f2; border:2px solid #fecaca; color:#dc2626; }
+.btn-danger:hover { background:#dc2626; color:#fff; }
+.btn-pink { background:#fce4ec; border:2px solid #f8bbd0; color:#c2185b; }
+.btn-pink:hover { background:#f8bbd0; color:#fff; transform: translateY(-2px); }
+.btn-success { background:#2da868; color:#fff; box-shadow: 0 4px 12px rgba(45,168,104,0.2); }
+.btn-success:hover { background:#248a54; transform:translateY(-2px); box-shadow:0 6px 20px rgba(45,168,104,0.3); }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #e2e2e9 0%, #d4d4dc 100%);
+  padding:48px 40px; text-align:center; color:var(--text); position:relative; overflow:hidden;
+  border-bottom: 1px solid var(--border);
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  animation: fadeIn 2s var(--ease);
+}
+.hero-content { position:relative; max-width:900px; margin:0 auto; z-index: 1; }
+.brand-top { font-size: 14px; font-weight: 800; color: #ffeb3b; margin-bottom: 4px; font-family: 'Fraunces', serif; letter-spacing: 0.5px; opacity: 0; animation: fadeIn 0.8s var(--ease) forwards; }
+.hero h1 { font-family:'Fraunces',serif; font-size:28px; font-weight:800; line-height:1.3; margin-bottom:12px; text-transform: uppercase; color: #fff; opacity: 0; animation: slideUp 0.8s var(--ease) 0.2s forwards; }
+.hero h1 .sub { display: inline; font-size: inherit; margin-left: 8px; opacity: 1; color: #fff; font-weight: 800; }
+.hero p { font-size:15px; opacity:0; margin-bottom:24px; color: rgba(255,255,255,0.9); animation: fadeIn 0.8s var(--ease) 0.4s forwards; }
+.hero-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; opacity: 0; animation: slideUp 0.8s var(--ease) 0.6s forwards; }
+.btn-hero { background:var(--accent); color:#fff; font-weight:800; padding:8px 2px; border-radius:10px; font-size:11px; box-shadow: 0 4px 12px rgba(45,91,227,0.15); }
+.btn-hero:hover { background: #2450cc; transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 32px rgba(45,91,227,0.35); }
+.btn-hero-outline { background:transparent; color:#fff; border:2px solid rgba(255,255,255,0.4); padding:12px 32px; border-radius:12px; font-size:15px; }
+.hero-stats { display:flex; gap:32px; justify-content:center; margin-top:32px; opacity: 0; animation: fadeIn 1s var(--ease) 0.8s forwards; }
+.hero-stat { text-align:center; transition: transform 0.3s var(--ease); }
+.hero-stat:hover { transform: translateY(-5px); }
+.hero-stat-val { font-size:26px; font-weight:800; color: #000; }
+.hero-stat-label { font-size:12px; font-family:'Space Mono',monospace; color: #000; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+/* MAIN CONTENT */
+.container { max-width:1200px; margin:0 auto; padding:0 40px; }
+.section { padding:48px 0; }
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; }
+.section-title { font-family:'Fraunces',serif; font-size:28px; font-weight:700; position: relative; }
+.section-title::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 40px; height: 4px; background: var(--accent); border-radius: 2px; }
+.section-title em { color:var(--accent); font-style:italic; }
+
+/* FILTERS */
+.filters { display:flex; flex-direction: column; gap:16px; margin-bottom:32px; }
+.filter-group { display:flex; gap:10px; flex-wrap:wrap; align-items: center; }
+.filter-label { font-size: 14px; font-weight: 700; color: var(--text2); min-width: 100px; }
+.filter-chip { padding:8px 20px; border-radius:20px; border:1.5px solid var(--border); background:var(--surface); font-size:13px; font-weight:600; cursor:pointer; transition:all 0.3s var(--ease); }
+.filter-chip:hover { border-color:var(--accent); color:var(--accent); transform: translateY(-2px); }
+.filter-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); box-shadow: 0 4px 12px rgba(45,91,227,0.2); }
+
+/* EVENT CARDS REDESIGN */
+.events-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; }
+.event-card {
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: 20px;
+  overflow:hidden; transition:all 0.5s var(--ease); cursor:pointer;
+  position:relative; display:flex; flex-direction:column;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  animation: fadeIn 0.6s var(--ease) both;
+}
+.event-card:hover { 
+  transform:translateY(-8px) scale(1.01); 
+  box-shadow: 0 20px 48px rgba(45,91,227,0.12); 
+  border-color: rgba(45,91,227,0.2);
+}
+
+/* Watermark Background */
+.event-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--bg-img);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.12; 
+  filter: grayscale(0.2) brightness(1.05);
+  z-index: 0;
+  transition: all 0.8s var(--ease);
+}
+.event-card:hover::before { 
+  opacity: 0.22; 
+  filter: grayscale(0) brightness(1.1);
+  transform: scale(1.15);
+}
+
+.event-card-top, .event-card-bottom {
+  position: relative;
+  z-index: 1; 
+}
+
+.event-card-top { padding:24px; flex-grow:1; }
+
+.event-card-cat { 
+  display:inline-block; font-size:10px; font-weight:800; letter-spacing:1px; 
+  text-transform:uppercase; padding:5px 12px; border-radius:30px; 
+  font-family:'Space Mono',monospace; margin-bottom:16px;
+  background: rgba(255,255,255,0.9); border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.3s var(--ease);
+}
+.event-card:hover .event-card-cat { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.event-card h3 { 
+  font-size:22px; font-weight:800; 
+  line-height:1.2; margin-bottom:16px; color: var(--text);
+  font-family: 'Fraunces', serif;
+  transition: color 0.3s var(--ease);
+}
+.event-meta { 
+  display:grid; grid-template-columns: 1fr; gap:10px; margin-bottom:20px; 
+  padding:16px; background: rgba(255,255,255,0.7); border-radius: 16px; border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s var(--ease);
+}
+.event-card:hover .event-meta { background: rgba(255,255,255,0.9); transform: translateY(-2px); border-color: rgba(45,91,227,0.1); }
+
+.event-meta-item { 
+  display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text); 
+  font-family:'Space Mono',monospace; font-weight:700;
+}
+.event-meta-item span { font-size:16px; opacity: 0.9; }
+.event-desc {
+  font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 20px;
+  white-space: pre-wrap; word-wrap: break-word; overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  line-clamp: 3;
+}
+.event-card .btn-primary {
+  border-radius: 12px; padding: 12px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; font-size: 12px;
+  transform: translateY(0);
+  transition: all 0.3s var(--ease);
+}
+.event-card:hover .btn-primary { transform: scale(1.02); }
+
+.event-card-bottom { 
+  padding:16px 24px; background: rgba(255,255,255,0.6); border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s var(--ease);
+}
+.event-card:hover .event-card-bottom { background: rgba(255,255,255,0.9); }
+
+.slots-count { font-weight: 800; font-size: 11px; color: var(--text); background: rgba(45,91,227,0.08); padding: 5px 10px; border-radius: 8px; }
+
+/* Badge styles for days until event */
+.event-days-badge {
+  font-size: 11px; font-weight: 800; padding: 5px 12px; border-radius: 20px; font-family: 'Space Mono', monospace;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.days-soon { background: #fee2e2; color: #dc2626; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+.days-upcoming { background: #e0f2fe; color: #ed099de7; }
+.days-past { background: #f3f4f6; color: #4b5563; }
+
+/* MODAL */
+.modal-overlay { 
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:200; 
+  backdrop-filter:blur(10px); align-items:center; justify-content:center; padding:20px;
+  transition: all 0.4s var(--ease);
+}
+.modal-overlay.open { display:flex; animation: fadeIn 0.4s var(--ease); }
+.modal { 
+  background:var(--surface); border-radius:24px; width:100%; max-width:600px; 
+  max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg);
+  transform: translateY(30px); opacity: 0; transition: all 0.5s var(--ease);
+}
+.modal-overlay.open .modal { transform: translateY(0); opacity: 1; }
+
+.modal-hero { background:linear-gradient(135deg,#1a2d6b,#2d5be3); padding:32px; color:#fff; border-radius:24px 24px 0 0; position: relative; }
+.modal-hero h2 { font-family:'Fraunces',serif; font-size:24px; font-weight:700; margin-bottom:12px; }
+.modal-meta { display:flex; gap:20px; flex-wrap:wrap; }
+.modal-meta-item { display:flex; align-items:center; gap:8px; font-size:13px; opacity:0.9; font-family:'Space Mono',monospace; }
+.modal-body { padding:32px; }
+.modal-close { float:right; background:rgba(255,255,255,0.15); border:none; color:#fff; border-radius:10px; padding:6px 12px; cursor:pointer; font-size:18px; transition: all 0.3s var(--ease); }
+.modal-close:hover { background:rgba(255,255,255,0.3); transform: rotate(90deg); }
+
+.form-group { margin-bottom:20px; }
+.form-group label { display:block; font-size:12px; font-weight:700; color:var(--text2); margin-bottom:8px; letter-spacing:1px; text-transform:uppercase; }
+.form-group input, .form-group select { width:100%; background:var(--surface2); border:2px solid transparent; border-radius:12px; padding:12px 16px; color:var(--text); font-family:'Nunito',sans-serif; font-size:15px; outline:none; transition:all 0.3s var(--ease); }
+.form-group input:focus, .form-group select:focus { border-color:var(--accent); background: #fff; box-shadow: 0 4px 16px rgba(45,91,227,0.08); }
+
+.radio-group { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.radio-card { border:2px solid var(--border); border-radius:14px; padding:16px; cursor:pointer; transition:all 0.3s var(--ease); position: relative; }
+.radio-card:hover { border-color:var(--accent); background: rgba(45,91,227,0.02); transform: translateY(-2px); }
+.radio-card.selected { border-color:var(--accent); background:#eff2ff; box-shadow: 0 4px 12px rgba(45,91,227,0.1); }
+.radio-card input[type=radio] { display:none; }
+.radio-card-title { font-weight:800; font-size:15px; margin-bottom:4px; display: flex; align-items: center; gap: 8px; }
+.radio-card-sub { font-size:12px; color:var(--text2); line-height: 1.4; }
+
+/* ROLE SELECTOR */
+.role-list { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+.role-option { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border:2px solid var(--border); border-radius:14px; cursor:pointer; transition:all 0.3s var(--ease); }
+.role-option:hover:not(.disabled) { border-color:var(--accent); background: rgba(45,91,227,0.02); transform: translateX(5px); }
+.role-option.selected { border-color:var(--accent); background:#eff2ff; transform: scale(1.02); box-shadow: 0 4px 16px rgba(45,91,227,0.1); }
+.role-option:not(.selected) .role-check { opacity: 0; transform: scale(0.5); transition: all 0.3s var(--ease); }
+.role-option.selected .role-check { opacity: 1; transform: scale(1); }
+.role-option.disabled { opacity:0.5; cursor:not-allowed; filter: grayscale(1); }
+.role-name { font-weight:700; font-size:15px; }
+.role-slots { font-size:12px; color:var(--text2); font-family:'Space Mono',monospace; margin-top: 4px; }
+.role-slot-bar { display:flex; gap:4px; margin-top:8px; }
+.slot-pip { width:10px; height:6px; border-radius:3px; background:var(--border); transition: all 0.4s var(--ease); }
+.slot-pip.filled { background:var(--accent); }
+
+/* MY REGISTRATIONS */
+.my-reg-card { 
+  background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:24px; 
+  display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+  transition: all 0.4s var(--ease);
+  animation: slideUp 0.5s var(--ease) both;
+}
+.my-reg-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--accent); }
+.my-reg-event { font-weight:800; font-size:17px; margin-bottom:8px; color: var(--text); }
+.my-reg-meta { display:flex; flex-direction:column; gap:6px; }
+.my-reg-meta span { font-size:13px; color:var(--text2); font-family:'Space Mono',monospace; display: flex; align-items: center; gap: 8px; }
+.badge { display:inline-flex; align-items:center; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-volunteer { background:#eff2ff; color:var(--accent); }
+.badge-participant { background:#e8f5e9; color:var(--accent3); }
+.badge-confirmed { background:#e8f5e9; color:var(--accent3); }
+.badge-pending { background:#fff3e0; color:#e65100; }
+.badge-cancelled { background:#fef2f2; color:#dc2626; }
+.swap-modal { display:none; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:12px; }
+.swap-modal.open { display:block; }
+
+/* TOAST */
+.toast-container { position:fixed; top:24px; right:24px; z-index:999; display:flex; flex-direction:column; gap:12px; }
+.toast {
+  background:rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+  border:1px solid var(--border); border-radius:16px; padding:16px 20px; font-size:14px;
+  min-width:320px; box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  display:flex; align-items:center; gap:12px;
+  animation: slideInRight 0.4s var(--ease);
+  border-left: 6px solid var(--accent);
+}
+.toast.success { border-left-color:var(--accent3); }
+.toast.error { border-left-color:var(--dc2626); }
+.toast.info { border-left-color:var(--accent); }
+@keyframes slideInRight { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+
+/* TABS */
+.page-tabs { display:flex; border-bottom:2px solid var(--border); margin-bottom:40px; gap: 8px; }
+.page-tab { padding:14px 28px; font-weight:700; font-size:15px; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all 0.3s var(--ease); color:var(--text2); }
+.page-tab:hover { color: var(--accent); background: rgba(45,91,227,0.04); border-radius: 12px 12px 0 0; }
+.page-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* EMPTY STATE */
+.empty-state { text-align:center; padding:60px 20px; color:var(--text2); }
+.empty-icon { font-size:48px; margin-bottom:12px; }
+
+/* SEARCH BAR */
+.search-bar-container { margin-bottom: 32px; position: relative; max-width: 100%; transition: all 0.3s var(--ease); }
+.search-bar {
+  width: 100%; padding: 14px 16px 14px 48px; border-radius: 16px;
+  border: 2px solid var(--border); background: var(--surface);
+  font-family: 'Nunito', sans-serif; font-size: 15px; transition: all 0.3s var(--ease);
+  color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+.search-bar:focus { outline: none; border-color: var(--accent); box-shadow: 0 8px 24px rgba(45,91,227,0.12); transform: translateY(-2px); }
+.search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--text3); transition: color 0.3s; }
+.search-bar:focus + .search-icon { color: var(--accent); }
+
+/* BRANDING CONTAINER */
+.brand-container {
+  background: var(--surface); padding: 16px 24px; border-radius: 24px; border: 1px solid var(--border);
+  margin-bottom: 24px; display: flex; align-items: center; gap: 24px;
+  justify-content: center; box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+  transition: all 0.4s var(--ease);
+}
+.brand-container:hover { transform: scale(1.01); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+.brand-logo {
+  height: 64px; width: 64px; object-fit: contain; background: var(--surface); border-radius: 50%;
+  padding: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); flex-shrink: 0;
+  transition: transform 0.5s var(--ease);
+}.brand-details h1 { font-size: 24px; line-height: 1.4; margin: 0; }
+.brand-details h1 span { display: block; }
+.brand-details .sub { font-size: 14px; color: var(--text) !important; font-weight: 800; display: block; margin-top: 2px; opacity: 1 !important; }
+/* Rotation removed */
+
+.tagline-highlight {
+  margin-bottom: 32px; font-weight: 900; font-size: 17px; background: #fff;
+  display: inline-block; padding: 14px 40px; border-radius: 50px;
+  border: 2px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  color: var(--text); letter-spacing: 0.5px; max-width: 100%; line-height: 1.4;
+  transition: all 0.3s var(--ease);
+}
+.tagline-highlight:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); border-color: var(--accent); }
+
+.btn-gold { background:#e3a82d; color:#fff; box-shadow: 0 4px 12px rgba(227,168,45,0.2); }
+.btn-gold:hover { background:#f0b435; transform:translateY(-2px); box-shadow:0 6px 20px rgba(227,168,45,0.3); }
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  header { padding:0 16px; }
+  .header-inner { height: 60px; }
+  .logo { font-size: 18px; }
+  .hero { padding: 32px 16px; }
+  .brand-container { 
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: flex-start;
+    gap: 4px; 
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .brand-container > div {
+    grid-column: 2;
+    padding: 0 2px;
+  }
+  .brand-container > img:first-child {
+    grid-column: 1;
+  }
+  .brand-container > img:last-child {
+    grid-column: 3;
+  }
+  .brand-logo { height: 40px; width: 40px; flex-shrink: 0; }
+  .brand-top { font-size: 10px; margin-bottom: 2px; }
+  .brand-details h1 { font-size: 11px !important; line-height: 1.4 !important; }
+  .brand-details h1 span { display: block; white-space: normal; }
+  .brand-details .sub { font-size: inherit !important; font-weight: 800 !important; color: var(--text) !important; margin: 2px 0 0 0 !important; }
+  
+  .hero h1 { font-size: 16px; line-height: 1.3; }
+  .hero h1 .sub { font-size: inherit !important; }
+  .event-title-animated { 
+    font-size: 70px; margin: 20px 0; letter-spacing: 2px; width: 100%; word-wrap: break-word; 
+    background: linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6, #ec4899) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+  }
+  .tagline-highlight { font-size: 5px; padding: 2px 4px; width: auto; max-width: 90%; border-radius: 2px; margin-bottom: 4px; line-height: 1; }
+  .hero-btns { flex-direction: column; width: 100%; gap: 10px; align-items: center; }
+  .btn-hero { width: 150px; padding: 6px 2px; font-size: 11px; }
+  .hero-stats { gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+  .hero-stat { flex: 1; min-width: 80px; }
+  .hero-stat-val { font-size: 20px; }
+  .container { padding: 0 16px; }
+  .section { padding: 32px 0; }
+  .events-grid { grid-template-columns: 1fr; }
+  .my-reg-card { padding: 16px; flex-direction: column; align-items: stretch; }
+  .my-reg-card > div:last-child { align-items: flex-start; margin-top: 12px; }
+  .modal { width: 95%; max-height: 85vh; border-radius: 16px; }
+  .modal-hero { padding: 24px; }
+  .modal-body { padding: 20px; }
+  .modal-meta { gap: 12px; }
+  .radio-group { grid-template-columns: 1fr; }
+  .form-group input, .form-group select { font-size: 14px; padding: 10px 12px; }
+  #chatbot-container { bottom: 10px !important; right: 10px !important; gap: 6px !important; }
+  #chatbot-toggle { width: 35px !important; height: 35px !important; }
+  #chatbot-icon { font-size: 18px !important; }
+  #chatbot-close-icon { font-size: 18px !important; }
+  #chatbot-greeting { font-size: 10px !important; padding: 6px 12px !important; border-radius: 12px 12px 0 12px !important; }
+  #chat-window { width: calc(100vw - 20px) !important; height: 60vh !important; right: 0 !important; bottom: 50px !important; }
+}
+@media(max-width:480px) {
+  .hero h1 { font-size: 14px; }
+  .event-title-animated { font-size: 20px; }
+  .hero-stat-val { font-size: 18px; }
+}
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
+.spinner-dark { border-color:rgba(0,0,0,0.15); border-top-color:var(--accent); }
+@keyframes spin { to { transform:rotate(360deg); } }
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">Event<span>Vault</span></div>
+    <div class="header-nav">
+      <!-- Nav links removed -->
+    </div>
+    <div class="header-actions">
+      <a href="/admin" class="btn btn-primary btn-sm" onclick="localStorage.removeItem('ev_token'); localStorage.removeItem('ev_user');">🔑 Organizer Login</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero-section">
+  <div class="hero-content">
+    <div class="brand-container">
+      <img src="https://tse3.mm.bing.net/th/id/OIP.fk1L_h3DZYDECKtbpWf3gAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Logo Left" class="brand-logo">
+      <div class="brand-details">
+        <div class="brand-top" style="color: var(--brand-red); font-weight: 700;">B.V.V. Sangha's</div>
+        <h1 style="margin: 0; font-weight: 800; color: var(--text);">
+          <span class="line-1">BILURU GURUBASAVA MAHASWAMIJI</span>
+          <span class="line-2">INSTITUTE OF TECHNOLOGY</span>
+          <span class="sub">MUDHOL-587 313</span>
+        </h1>
+      </div>
+      <img src="https://th.bing.com/th/id/R.31805c589b24891cfb1006a6d123ff00?rik=pf2sBVkKtsv2cg&riu=http%3a%2f%2fwww.bvvsayurved.ac.in%2fwp-content%2fuploads%2f2022%2f12%2fsbgbms.jpg&ehk=X%2fv7lnyum7V8qHHscDjmADb29yAbiq7WB0D6l2gQ9e8%3d&risl=&pid=ImgRaw&r=0" alt="Logo Right" class="brand-logo">
+    </div>
+    
+    <div style="text-align: center;">
+      <div class="event-title-animated">SIDDHISOPANAM - 2K26</div>
+    </div>
+
+ <div class="hero-btns">      <button class="btn-hero" onclick="openMySignupsModal()">My Sign Ups of Events</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val" id="hero-stat-events">—</div><div class="hero-stat-label">Events</div></div>
+      <div class="hero-stat"><div class="hero-stat-val" id="hero-stat-vols">—</div><div class="hero-stat-label">Volunteers</div></div>
+      <div class="hero-stat"><div class="hero-stat-val" id="hero-stat-parts">—</div><div class="hero-stat-label">Participants</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="container">
+
+<section class="section" style="padding: 40px 0; text-align: center;">
+  <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+    <a href="events.html" class="btn btn-success" style="padding: 18px 48px; font-size: 18px; border-radius: 12px; box-shadow: 0 10px 30px rgba(45,168,104,0.2);">📅 Upcoming Events</a>
+    <a href="past-events.html" class="btn btn-pink" style="padding: 18px 48px; font-size: 18px; border-radius: 12px; border: 2px solid #f8bbd0;">⌛ Past Events</a>
+    <a href="achievements.html" class="btn btn-gold" style="padding: 18px 48px; font-size: 18px; border-radius: 12px; border: 2px solid #daa520;">🏆 Achievements</a>
+  </div>
+</section>
+
+<!-- CREDITS -->
+<div style="text-align: center; margin: 30px 0; padding: 25px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fdfdfd; border-radius: 16px;">
+  <div style="margin-bottom: 0;">
+    <p style="font-weight: 700; font-size: 13px; margin-bottom: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px;">Developed and Maintaining by</p>
+    <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 10px;">
+      <p style="font-size: 14px; font-weight: 800; color: var(--text);">Anupama S H & Kedar K D | 6th Semester</p>
+      <p style="font-size: 14px; font-weight: 800; color: var(--text);">Amogh I Y | 4th Semester</p>
+    </div>
+    <p style="font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-top: 8px;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</p>
+  </div>
+</div>
+
+  <!-- MY REGISTRATIONS TAB -->
+  <div id="tab-my" style="display:none">
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">Volunteer & Participant <em>Portal</em></div>
+      </div>
+      <div class="form-group" style="max-width:400px;background:var(--surface);padding:30px;border-radius:16px;border:1.5px solid var(--border);box-shadow:var(--shadow)">
+        <label style="font-size:14px;color:var(--text);margin-bottom:12px">Sign in with your email to view your registrations</label>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+          <input type="email" id="my-email-input" placeholder="student@university.edu" style="padding:12px">
+          <button class="btn btn-primary" id="my-regs-btn" onclick="handleMyRegsClick()">
+            <span id="my-regs-btn-text">Send OTP</span>
+          </button>
+        </div>
+
+        <!-- OTP for My Regs Tab -->
+        <div id="my-regs-otp-container" style="display:none; margin-top:16px; padding:16px; background:#f0f4ff; border-radius:12px; border:2px solid var(--accent)">
+          <label style="display:block; font-size:11px; font-weight:700; color:var(--accent); margin-bottom:8px; text-transform:uppercase">Enter 6-Digit Code</label>
+          <div style="font-size:12px; color:var(--text2); margin-bottom:12px">Check your Gmail for OTP</div>
+          <input type="text" id="my-regs-otp" placeholder="000000" maxlength="6" style="text-align:center; letter-spacing:8px; font-size:24px; font-weight:bold; width:100%; border:none; background:none; outline:none">
+        </div>
+
+        <p style="font-size:12px;color:var(--text2);margin-top:16px">Don't have an account? <a href="events.html" style="color:var(--accent);font-weight:700">Browse Events</a> to register!</p>
+      </div>
+      <div id="my-regs-list" style="display:flex;flex-direction:column;gap:12px;margin-top:30px"></div>
+    </section>
+  </div>
+</div>
+
+<footer style="margin-top: 40px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center; background: var(--bg);">
+  <div class="container">
+    <p style="font-size: 12px; color: var(--text3); margin-top: 20px;">&copy; 2026 EventVault. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- SIGN-UP MODAL -->
+<div class="modal-overlay" id="signup-modal">
+  <div class="modal">
+    <div class="modal-hero">
+      <button class="modal-close" onclick="closeSignup()">✕</button>
+      <div id="modal-cat-badge" style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:rgba(255,255,255,0.2);display:inline-block;padding:4px 10px;border-radius:20px;font-family:'Space Mono',monospace;margin-bottom:10px"></div>
+      <h2 id="modal-event-name"></h2>
+      <div class="modal-meta">
+        <div class="modal-meta-item"><span>📅</span><span id="modal-date"></span></div>
+        <div class="modal-meta-item"><span>🕐</span><span id="modal-time"></span></div>
+        <div class="modal-meta-item"><span>📍</span><span id="modal-location"></span></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="modal-event-id">
+      <div id="modal-desc" style="font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);white-space:pre-wrap;word-wrap:break-word"></div>
+      <div class="form-group">
+        <label>Sign up as</label>
+        <div class="radio-group">
+          <label class="radio-card selected" id="rc-volunteer" onclick="selectType('volunteer')">
+            <input type="radio" name="reg-type" value="volunteer">
+            <div class="radio-card-title">🤝 VOLUNTEER</div>
+            <div class="radio-card-sub">HELP ORGANIZE AND RUN THE EVENT</div>
+          </label>
+          <label class="radio-card" id="rc-participant" onclick="selectType('participant')">
+            <input type="radio" name="reg-type" value="participant">
+            <div class="radio-card-title">🎟️ PARTICIPANT</div>
+            <div class="radio-card-sub">ATTEND THE EVENT</div>
+          </label>
+        </div>
+      </div>
+
+      <div id="role-section" class="form-group">
+        <label>Choose a volunteer role</label>
+        <div class="role-list" id="role-list"></div>
+      </div>
+
+      <!-- TEAM REGISTRATION SECTION -->
+      <div id="team-section" style="display:none;margin-top:20px;padding-top:10px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;color:var(--accent);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:0.5px">
+          <span style="font-size:16px">🏸</span> TEAM REGISTRATION
+        </div>
+        <div class="form-group">
+          <label>TEAM NAME *</label>
+          <input type="text" id="reg-team-name" placeholder="e.g. The Invincibles">
+        </div>
+        <div class="form-group">
+          <label>PASSWORD *</label>
+          <input type="password" id="reg-team-password" placeholder="Your password">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px">
+        <div class="form-group"><label>Full Name (Enter the name exactly as it should appear on the certificate) *</label><input type="text" id="reg-name" placeholder="Your name"></div>
+        <div class="form-group"><label>EMAIL *</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label>USN (REG NO.) *</label><input type="text" id="reg-usn" placeholder="Enter USN or REG NO."></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="reg-phone" placeholder="+91 XXXXXXXXXX"></div>
+      </div>
+
+      <div class="form-group" style="margin-top:10px">
+        <label>Upload  Photo (Max 100KB) *</label>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div id="photo-preview" style="width:60px; height:60px; border-radius:10px; border:2px dashed var(--border); background:#f9f9f9; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+            <span style="font-size:24px; opacity:0.3;">👤</span>
+          </div>
+          <div style="flex:1">
+            <input type="file" id="reg-photo" accept="image/*" onchange="previewPhoto(this)" style="font-size:12px; width:100%;">
+            <p style="font-size:10px; color:var(--text3); margin-top:4px;">This photo will appear on your certificate and achievements page.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- OTP FIELD (Hidden initially) -->
+      <div id="signup-otp-container" style="display:none; margin-top:16px; padding:16px; background:#f0f4ff; border-radius:12px; border:2px solid var(--accent)">
+        <label style="display:block; font-size:11px; font-weight:700; color:var(--accent); margin-bottom:8px; text-transform:uppercase">Enter 6-Digit Code</label>
+        <div style="font-size:12px; color:var(--text2); margin-bottom:12px">Check your Gmail for OTP</div>
+        <input type="text" id="reg-otp" placeholder="000000" maxlength="6" style="text-align:center; letter-spacing:8px; font-size:24px; font-weight:bold; width:100%; border:none; background:none; outline:none">
+      </div>
+
+      <div id="signup-error" style="color:#dc2626;font-size:13px;margin-top:12px;margin-bottom:12px;font-family:'Space Mono',monospace"></div>
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px" id="signup-main-btn" onclick="handleSignupClick()">
+        <span id="signup-btn-text">Confirm Registration</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MY SIGNUPS MODAL -->
+<div class="modal-overlay" id="my-signups-modal">
+  <div class="modal">
+    <div class="modal-hero">
+      <button class="modal-close" onclick="closeMySignupsModal()">✕</button>
+      <h2>My Event Sign Ups</h2>
+      <div style="font-size:14px;color:#fff;opacity:0.9;margin-top:8px">Enter your email to view your volunteer and participant registrations</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="my-signups-email" placeholder="your@email.com" style="width:100%;padding:12px;border-radius:8px;border:1.5px solid var(--border);font-size:14px">
+      </div>
+      
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;margin-top:16px" id="my-signups-main-btn" onclick="handleMySignupsClick()">
+        <span id="my-signups-btn-text">View My Sign Ups</span>
+      </button>
+      <div id="my-signups-list" style="margin-top:24px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toasts"></div>
+
+<!-- CHATBOT UI -->
+<div id="chatbot-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 1000; font-family: 'Nunito', sans-serif; display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+  <!-- Greeting Bubble -->
+  <div id="chatbot-greeting" style="background: #1a1a1a; color: #fff; padding: 10px 18px; border-radius: 15px 15px 0 15px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.1); animation: fadeIn 0.5s var(--ease); white-space: nowrap;">
+    Hey!! How can<br>I help you.....
+  </div>
+
+  <!-- Chatbot Toggle Button -->
+  <button id="chatbot-toggle" style="width: 60px; height: 60px; border-radius: 30px; background: #1a1a1a; color: #fff; border: none; cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease); position: relative;">
+    <span id="chatbot-icon" style="font-size: 28px;">🤖</span>
+    <span id="chatbot-close-icon" style="font-size: 24px; display: none;">✕</span>
+  </button>
+
+  <!-- Chat Window -->
+  <div id="chat-window" style="position: absolute; bottom: 80px; right: 0; width: 350px; height: 500px; background: #fff; border-radius: 20px; box-shadow: 0 12px 48px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border); animation: slideUp 0.4s var(--ease);">
+    <!-- Chat Header -->
+    <div style="background: #1a1a1a; color: #fff; padding: 20px; display: flex; align-items: center; gap: 12px;">
+      <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🤖</div>
+      <div>
+        <div style="font-weight: 800; font-size: 16px;">EventVault AI</div>
+        <div style="font-size: 11px; opacity: 0.8;">Online | Ready to help</div>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="chat-messages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #f8fafc;">
+      <div style="align-self: flex-start; background: #fff; padding: 12px 16px; border-radius: 16px 16px 16px 4px; font-size: 14px; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.05); max-width: 85%;">
+        Hello! I'm your EventVault assistant. How can I help you today?
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; background: #fff;">
+      <input type="text" id="chat-input" placeholder="Type your question..." style="flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; outline: none; font-family: 'Nunito', sans-serif;">
+      <button id="chat-send" style="background: #1a1a1a; color: #fff; border: none; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+        <span>➤</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Chatbot Logic
+const chatbotToggle = document.getElementById('chatbot-toggle');
+const chatWindow = document.getElementById('chat-window');
+const chatbotIcon = document.getElementById('chatbot-icon');
+const chatbotCloseIcon = document.getElementById('chatbot-close-icon');
+const chatbotGreeting = document.getElementById('chatbot-greeting');
+const chatInput = document.getElementById('chat-input');
+const chatSend = document.getElementById('chat-send');
+const chatMessages = document.getElementById('chat-messages');
+
+chatbotToggle.addEventListener('click', () => {
+  const isOpen = chatWindow.style.display === 'flex';
+  chatWindow.style.display = isOpen ? 'none' : 'flex';
+  chatbotIcon.style.display = isOpen ? 'block' : 'none';
+  chatbotCloseIcon.style.display = isOpen ? 'none' : 'block';
+  chatbotGreeting.style.display = isOpen ? 'block' : 'none';
+  if (!isOpen) chatInput.focus();
+});
+
+async function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+
+  // Get user info if available
+  const email = sessionStorage.getItem('user_email');
+  const usn = sessionStorage.getItem('user_usn');
+
+  // Add user message
+  appendMessage(text, 'user');
+  chatInput.value = '';
+
+  // Show typing indicator
+  const typingId = 'typing-' + Date.now();
+  appendMessage('<span class="spinner spinner-dark"></span> Thinking...', 'bot', typingId);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, email, usn })
+    });
+    const data = await res.json();
+    
+    // Remove typing indicator and add bot response
+    const typingEl = document.getElementById(typingId);
+    if (typingEl) typingEl.remove();
+    appendMessage(data.reply, 'bot');
+  } catch (e) {
+    const typingEl = document.getElementById(typingId);
+    if (typingEl) typingEl.remove();
+    appendMessage("I'm sorry, I'm having trouble connecting right now. Please try again later.", 'bot');
+  }
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function appendMessage(text, side, id) {
+  const msg = document.createElement('div');
+  if (id) msg.id = id;
+  msg.style.alignSelf = side === 'user' ? 'flex-end' : 'flex-start';
+  msg.style.background = side === 'user' ? '#1a1a1a' : '#fff';
+  msg.style.color = side === 'user' ? '#fff' : 'var(--text)';
+  msg.style.padding = '12px 16px';
+  msg.style.borderRadius = side === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px';
+  msg.style.fontSize = '14px';
+  msg.style.lineHeight = '1.5';
+  msg.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+  msg.style.maxWidth = '85%';
+  msg.style.wordBreak = 'break-word';
+  msg.innerHTML = text;
+  chatMessages.appendChild(msg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+chatSend.addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+const API = '/api';
+let allEvents = [], currentCat = 'all', currentScope = 'all', searchQuery = '', selectedType = 'volunteer', selectedRoleId = null, currentEventId = null, currentEvent = null;
+let signupStep = 'form', myRegsStep = 'form';
+
+// ─── TABS ────────────────────────────────────────────────
+function switchTab(tab, el) {
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-events').style.display = tab === 'events' ? '' : 'none';
+  document.getElementById('tab-my').style.display = tab === 'my' ? '' : 'none';
+  document.getElementById('hero-section').style.display = tab === 'events' ? '' : 'none';
+}
+
+// ─── MODALS ──────────────────────────────────────────────
+function openMySignupsModal() {
+  const modal = document.getElementById('my-signups-modal');
+  if (!modal) return;
+  const emailInput = document.getElementById('my-signups-email');
+  if (emailInput) emailInput.value = '';
+  const list = document.getElementById('my-signups-list');
+  if (list) list.innerHTML = '';
+  modal.classList.add('open');
+  const btnText = document.getElementById('my-signups-btn-text');
+  if (btnText) btnText.textContent = 'View My Sign Ups';
+  if (emailInput) setTimeout(() => emailInput.focus(), 100);
+}
+
+function closeMySignupsModal() {
+  const modal = document.getElementById('my-signups-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+// ─── SEARCH ──────────────────────────────────────────────
+// Search functionality moved to events.html
+
+// ─── API ─────────────────────────────────────────────────
+async function apiFetch(method, path, body) {
+  const r = await fetch(API + path, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || 'Error');
+  return d;
+}
+const get = p => apiFetch('GET', p);
+const post = (p, b) => apiFetch('POST', p, b);
+const patch = (p, b) => apiFetch('PATCH', p, b);
+
+// ─── TOAST ───────────────────────────────────────────────
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ─── EVENTS ──────────────────────────────────────────────
+async function loadEvents() {
+  try {
+    allEvents = await get('/events');
+    updateHeroStats();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+
+function updateHeroStats() {
+  const now = new Date();
+  // Include events today
+  const upcoming = allEvents.filter(e => {
+    if (!e.date) return false;
+    const evDate = new Date(e.date);
+    evDate.setHours(23, 59, 59, 999);
+    return evDate >= now;
+  }).length;
+  
+  const totalVols = allEvents.reduce((s, e) => s + (parseInt(e.volunteerCount) || 0), 0);
+  const totalParts = allEvents.reduce((s, e) => s + (parseInt(e.participantCount) || 0), 0);
+  
+  document.getElementById('hero-stat-events').textContent = upcoming || 0;
+  document.getElementById('hero-stat-vols').textContent = totalVols || 0;
+  document.getElementById('hero-stat-parts').textContent = totalParts || 0;
+}
+
+// ─── SIGNUP MODAL ─────────────────────────────────────────
+async function openSignup(eventId) {
+  try {
+    const ev = await get(`/events/${eventId}`);
+    currentEvent = ev;
+    currentEventId = eventId;
+    signupStep = 'form';
+    document.getElementById('signup-otp-container').style.display = 'none';
+    document.getElementById('signup-btn-text').textContent = 'Send Verification Code';
+    
+    selectedType = 'volunteer'; selectedRoleId = null;
+    document.getElementById('modal-event-id').value = eventId;
+    document.getElementById('modal-event-name').textContent = ev.title;
+    document.getElementById('modal-cat-badge').textContent = ev.category || 'General';
+    document.getElementById('modal-date').textContent = new Date(ev.date).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('modal-time').textContent = ev.time;
+    document.getElementById('modal-location').textContent = ev.location;
+    document.getElementById('modal-desc').textContent = ev.description || '';
+    document.getElementById('signup-error').textContent = '';
+    
+    // Reset Photo
+    signupPhotoBase64 = null;
+    document.getElementById('reg-photo').value = '';
+    document.getElementById('photo-preview').innerHTML = '<span style="font-size:24px; opacity:0.3;">👤</span>';
+
+    document.getElementById('rc-volunteer').classList.add('selected');
+    document.getElementById('rc-participant').classList.remove('selected');
+    document.getElementById('role-section').style.display = '';
+    document.getElementById('team-section').style.display = 'none';
+    
+    // Auto-select participant for team-based events
+    if (ev.teamMode === 'team') {
+      selectType('participant');
+    }
+
+    renderRoles(ev.roles || []);
+    document.getElementById('signup-modal').classList.add('open');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function closeSignup() { document.getElementById('signup-modal').classList.remove('open'); }
+
+function selectType(type) {
+  selectedType = type; selectedRoleId = null;
+  document.getElementById('rc-volunteer').classList.toggle('selected', type === 'volunteer');
+  document.getElementById('rc-participant').classList.toggle('selected', type === 'participant');
+
+  const isTeam = currentEvent && currentEvent.teamMode === 'team';
+
+  document.getElementById('role-section').style.display = type === 'volunteer' ? '' : 'none';
+  document.getElementById('team-section').style.display = (type === 'participant' && isTeam) ? '' : 'none';
+}
+function renderRoles(roles) {
+  document.getElementById('role-list').innerHTML = roles.map(r => {
+    const pips = Array.from({length: r.slots}, (_, i) => `<div class="slot-pip ${i < r.filled ? 'filled' : ''}"></div>`).join('');
+    return `
+    <div class="role-option ${r.remaining === 0 ? 'disabled' : ''}" id="role-opt-${r.id}" onclick="selectRole('${r.id}',${r.remaining === 0})">
+      <div>
+        <div class="role-name">${r.name}</div>
+        <div class="role-slot-bar" style="margin-top:4px">${pips}</div>
+        <div class="role-slots">${r.remaining} of ${r.slots} slots available</div>
+      </div>
+      <div style="font-size:20px">${r.remaining === 0 ? '🚫' : '<span class="role-check">✓</span>'}</div>
+      </div>`;  }).join('');
+}
+
+function selectRole(id, disabled) {
+  if (disabled) return;
+  selectedRoleId = id;
+  document.querySelectorAll('.role-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('role-opt-' + id)?.classList.add('selected');
+}
+
+let signupPhotoBase64 = null;
+
+function previewPhoto(input) {
+  const preview = document.getElementById('photo-preview');
+  const errEl = document.getElementById('signup-error');
+  
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    
+    // Validate size (100KB = 102400 bytes)
+    if (file.size > 102400) {
+      errEl.textContent = '⚠ Photo must be 100KB or smaller';
+      input.value = '';
+      preview.innerHTML = '<span style="font-size:24px; opacity:0.3;">👤</span>';
+      signupPhotoBase64 = null;
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+      signupPhotoBase64 = e.target.result;
+      errEl.textContent = '';
+    };
+    reader.readAsDataURL(file);
+  } else {
+    preview.innerHTML = '<span style="font-size:24px; opacity:0.3;">👤</span>';
+    signupPhotoBase64 = null;
+  }
+}
+
+// ─── SIGNUP LOGIC ─────────────────────────────────────────
+async function handleSignupClick() {
+    if (signupStep === 'form') {
+        await sendSignupOTP();
+    } else {
+        await submitSignup();
+    }
+}
+
+async function sendSignupOTP() {
+    const email = document.getElementById('reg-email').value.trim();
+    const name = document.getElementById('reg-name').value.trim();
+    const usn = document.getElementById('reg-usn').value.trim();
+    const errEl = document.getElementById('signup-error');
+    
+    if (!name || !email || !usn) { errEl.textContent = '⚠ Name, Email, and USN are required'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = '⚠ Valid email is required'; return; }
+    if (!signupPhotoBase64) { errEl.textContent = '⚠ Profile photo is required'; return; }
+    
+    if (selectedType === 'volunteer' && !selectedRoleId) { errEl.textContent = '⚠ Please select a volunteer role'; return; }
+
+    errEl.textContent = '';
+    document.getElementById('signup-btn-text').innerHTML = '<span class="spinner"></span> Sending OTP...';
+    try {
+        await post('/auth/send-otp', { email });
+        signupStep = 'otp';
+        document.getElementById('signup-otp-container').style.display = 'block';
+        document.getElementById('signup-btn-text').textContent = 'Verify & Confirm Registration';
+        toast('Verification code sent to your email!', 'success');
+    } catch(e) { errEl.textContent = '⚠ ' + e.message; }
+    if (signupStep === 'form') document.getElementById('signup-btn-text').textContent = 'Send Verification Code';
+}
+
+async function submitSignup() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const usn = document.getElementById('reg-usn').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const otp = document.getElementById('reg-otp').value.trim();
+  const errEl = document.getElementById('signup-error');
+  
+  if (!otp || otp.length !== 6) { errEl.textContent = '⚠ Please enter the 6-digit code'; return; }
+
+  const isTeam = currentEvent && currentEvent.teamMode === 'team';
+  const teamName = document.getElementById('reg-team-name').value.trim();
+  const password = document.getElementById('reg-team-password').value.trim();
+
+  errEl.textContent = '';
+  document.getElementById('signup-btn-text').innerHTML = '<span class="spinner"></span> Verifying...';
+  try {
+    // 1. Verify OTP
+    await post('/auth/verify-otp', { email, otp });
+
+    // 2. Submit Registration
+    const payload = { 
+      eventId: currentEventId, 
+      name, 
+      email, 
+      usn,
+      phone, 
+      type: selectedType, 
+      roleId: selectedRoleId,
+      photo: signupPhotoBase64
+    };
+    
+    if (selectedType === 'participant' && isTeam) {
+      payload.teamDetails = { teamName };
+      payload.password = password;
+    }
+
+    const result = await post('/registrations', payload);
+    closeSignup();
+    toast(`🎉 Successfully registered for ${result.eventTitle}!`, 'success');
+    loadEvents();
+  } catch(e) { errEl.textContent = '⚠ ' + e.message; }
+  if (signupStep === 'otp') document.getElementById('signup-btn-text').textContent = 'Verify & Confirm Registration';
+}
+
+// ─── MY SIGNUPS MODAL ─────────────────────────────────────
+async function handleMySignupsClick() {
+  await loadMySignups();
+}
+
+async function loadMySignups() {
+  const email = document.getElementById('my-signups-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('Please enter a valid email', 'error'); return; }
+
+  document.getElementById('my-signups-btn-text').innerHTML = '<span class="spinner"></span> Loading...';
+  try {
+    const regs = await apiFetch('GET', `/registrations/my?email=${encodeURIComponent(email)}`);
+    const list = document.getElementById('my-signups-list');
+    
+    if (!regs.length) {
+      list.innerHTML = '<div class="empty-state" style="padding:40px 20px;text-align:center"><div class="empty-icon">📋</div><div>No registrations found for this email</div></div>';
+    } else {
+      list.innerHTML = regs.map(r => `
+      <div class="my-reg-card" style="margin-bottom:16px; border:1px solid var(--border); border-radius:12px; padding:16px; background:var(--surface); display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+          <div style="flex:1">
+            <div class="my-reg-event" style="font-weight:700; font-size:16px; color:var(--text); line-height:1.2;">${r.event?.title || '<span style="color:var(--text3)">Unknown Event</span>'}</div>
+            <div class="my-reg-meta" style="font-size:13px; color:var(--text2); margin-top:6px; display:flex; flex-direction:column; gap:4px">
+              ${r.event ? `<span>📅 ${new Date(r.event.date).toLocaleDateString()}</span>` : `<span>ID: ${r.eventId}</span>`}
+              ${r.event ? `<span>📍 ${r.event.location}</span>` : ''}
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0;">
+            <span class="badge badge-${r.status}">${r.status}</span>
+            ${r.checkedIn ? '<span style="font-size:11px;color:var(--accent3);font-weight:700">✅ Checked In</span>' : ''}
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-top:8px; border-top:1px solid var(--surface2)">
+          <span class="badge badge-${r.type}">${r.type}</span>
+          ${r.roleName ? `<span style="font-size:12px; color:var(--text2); font-weight:600">— ${r.roleName}</span>` : ''}
+          ${r.swapRequested ? '<span style="font-size:11px; color:var(--accent4); font-weight:700; margin-left:auto;">⏳ Transfer Pending</span>' : ''}
+        </div>
+
+        ${r.type === 'volunteer' && r.status === 'confirmed' && !r.swapRequested ? `
+          <button class="btn btn-sm btn-outline" style="width:100%; justify-content:center; margin-top:4px;" onclick="toggleSwap('${r.registrationId}')">🔄 Transfer / Swap</button>
+        ` : ''}
+
+        <!-- Swap Form (Hidden by default) -->
+        <div id="swap-form-${r.registrationId}" style="display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);">
+          <div style="background:var(--bg); padding:12px; border-radius:10px; border:1px solid var(--border);">
+            <div style="margin-bottom:12px; font-size:13px; font-weight:700; color:var(--accent)">🔄 Transfer to Another Person</div>
+            
+            <label style="display:block; font-size:11px; font-weight:700; color:var(--text2); margin-bottom:8px; text-transform:uppercase">Transfer Details (Required)</label>
+            <input type="text" id="swap-new-name-${r.registrationId}" placeholder="New Person Full Name" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid var(--border); font-size:13px; margin-bottom:8px">
+            <input type="email" id="swap-new-email-${r.registrationId}" placeholder="New Person Email" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid var(--border); font-size:13px; margin-bottom:8px">
+            <input type="text" id="swap-new-usn-${r.registrationId}" placeholder="New Person USN" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid var(--border); font-size:13px; margin-bottom:12px">
+
+            <label style="display:block; font-size:11px; font-weight:700; color:var(--text2); margin-bottom:8px; text-transform:uppercase">Reason for Transfer</label>
+            <textarea id="swap-reason-${r.registrationId}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid var(--border); font-size:13px; margin-bottom:12px" rows="2" placeholder="Why do you want to transfer your registration?"></textarea>
+            
+            <div id="swap-otp-section-${r.registrationId}" style="display:none; margin-bottom:12px">
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--accent); margin-bottom:8px; text-transform:uppercase">OTP Sent to New Person</label>
+              <input type="text" id="swap-otp-${r.registrationId}" placeholder="000000" maxlength="6" style="width:100%; padding:10px; border-radius:8px; border:2px solid var(--accent); font-size:16px; font-weight:bold; letter-spacing:4px; text-align:center">
+            </div>
+
+            <div style="display:flex; gap:8px">
+              <button class="btn btn-sm btn-primary" id="swap-btn-${r.registrationId}" style="flex:2" onclick="handleSwapClick('${r.registrationId}', '${email}')">Send OTP to New Person</button>
+              <button class="btn btn-sm btn-outline" style="flex:1" onclick="toggleSwap('${r.registrationId}')">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>`).join('');
+    }
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+  document.getElementById('my-signups-btn-text').textContent = 'View My Sign Ups';
+}
+
+// ─── SWAP ROLE LOGIC ──────────────────────────────────────
+let swapStep = {}; // track step per registration
+
+function toggleSwap(id) {
+  const f = document.getElementById('swap-form-' + id);
+  if (!f) return;
+  
+  if (f.style.display === 'none') {
+    f.style.display = 'block';
+    swapStep[id] = 'form';
+    document.getElementById('swap-otp-section-' + id).style.display = 'none';
+    document.getElementById('swap-btn-' + id).textContent = 'Send OTP & Request';
+  } else {
+    f.style.display = 'none';
+  }
+}
+
+async function handleSwapClick(id, currentEmail) {
+  const newEmail = document.getElementById('swap-new-email-' + id).value.trim();
+  const targetEmail = newEmail || currentEmail;
+  
+  if (!swapStep[id] || swapStep[id] === 'form') {
+    if (newEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+      toast('Please enter a valid email for the new person', 'error');
+      return;
+    }
+    await sendSwapOTP(id, targetEmail);
+  } else {
+    await submitSwap(id, currentEmail);
+  }
+}
+
+async function sendSwapOTP(id, targetEmail) {
+  const btn = document.getElementById('swap-btn-' + id);
+  const oldText = btn.textContent;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+  btn.disabled = true;
+  try {
+    await post('/auth/send-otp', { email: targetEmail });
+    swapStep[id] = 'otp';
+    document.getElementById('swap-otp-section-' + id).style.display = 'block';
+    btn.textContent = 'Verify & Submit Request';
+    toast(`Verification code sent to ${targetEmail}`, 'success');
+  } catch(e) {
+    toast(e.message, 'error');
+    btn.textContent = 'Send OTP to New Person';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function submitSwap(id, email) {
+  const reason = document.getElementById('swap-reason-' + id).value.trim();
+  const newEmail = document.getElementById('swap-new-email-' + id).value.trim();
+  const newName = document.getElementById('swap-new-name-' + id).value.trim();
+  const newUsn = document.getElementById('swap-new-usn-' + id).value.trim();
+  const otp = document.getElementById('swap-otp-' + id).value.trim();
+
+  if (!reason) { toast('Please provide a reason', 'error'); return; }
+  if (!otp) { toast('Please enter the OTP', 'error'); return; }
+  
+  // If they filled any "new person" field, they must fill name and email
+  if ((newEmail || newName || newUsn) && (!newEmail || !newName)) {
+    toast('Please enter both name and email for the transfer', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('swap-btn-' + id);
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+  try {
+    await patch(`/registrations/${id}/swap-request`, { 
+      email, 
+      reason,
+      newPersonEmail: newEmail,
+      newPersonName: newName,
+      newPersonUsn: newUsn,
+      otp
+    });
+    toast('Transfer request submitted! Organizer will review it.', 'success');
+    loadMySignups(); 
+  } catch(e) {
+    toast(e.message, 'error');
+    btn.textContent = 'Verify & Submit Request';
+  }
+}
+
+async function cancelReg(id, email) {
+  if (!confirm('Cancel this registration?')) return;
+  try {
+    await patch(`/registrations/${id}/cancel`, { email });
+    toast('Registration cancelled', 'info');
+    
+    // Refresh both possible lists
+    if (document.getElementById('my-signups-modal').classList.contains('open')) {
+      loadMySignups();
+    }
+    if (document.getElementById('tab-my').style.display !== 'none') {
+      loadMyRegs();
+    }
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+async function initApp() {
+  await loadEvents();
+  
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('tab') === 'my') {
+    openMySignupsModal();
+    const storedEmail = sessionStorage.getItem('user_email');
+    if (storedEmail) {
+      document.getElementById('my-signups-email').value = storedEmail;
+      loadMySignups();
+    }
+  }
+}
+
+initApp();
+</script>
+</body>
+</html>
