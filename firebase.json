@@ -24,6 +24,22 @@
         "function": "api"
       },
       {
+        "source": "/choice/**",
+        "destination": "/choice.html"
+      },
+      {
+        "source": "/signup/**",
+        "destination": "/signup.html"
+      },
+      {
+        "source": "/user-login",
+        "destination": "/user-login.html"
+      },
+      {
+        "source": "/user-signup",
+        "destination": "/user-signup.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
