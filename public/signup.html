@@ -182,8 +182,16 @@ let selectedType = 'volunteer', selectedRoleId = null, eventData = null;
 async function init() {
   try {
     const r = await fetch(`/api/events/${eventId}`);
+    if (!r.ok) {
+      const contentType = r.headers.get('content-type');
+      let errorMsg = 'Event not found';
+      if (contentType && contentType.includes('application/json')) {
+        const ev = await r.json();
+        errorMsg = ev.error || errorMsg;
+      }
+      throw new Error(errorMsg);
+    }
     const ev = await r.json();
-    if (!r.ok) throw new Error(ev.error);
     eventData = ev;
     document.title = ev.title + ' — EventVault';
     document.getElementById('hero-cat').textContent = ev.category || 'General';
@@ -244,6 +252,15 @@ async function checkTeam() {
   teamCheckTimeout = setTimeout(async () => {
     try {
       const res = await fetch(`/api/registrations/team-check?eventId=${eventId}&teamName=${encodeURIComponent(teamName)}&password=${encodeURIComponent(password)}`);
+      if (!res.ok) {
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          throw new Error(data.error || 'Team check failed');
+        } else {
+          throw new Error('Team check failed');
+        }
+      }
       const data = await res.json();
       
       infoDiv.style.display = 'block';

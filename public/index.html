@@ -824,8 +824,26 @@ function closeMySignupsModal() {
 // ─── API ─────────────────────────────────────────────────
 async function apiFetch(method, path, body) {
   const r = await fetch(API + path, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+  if (!r.ok) {
+    let errorMsg = 'Error';
+    try {
+      const contentType = r.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const d = await r.json();
+        errorMsg = d.error || 'Error';
+      } else {
+        errorMsg = await r.text() || 'Error';
+      }
+    } catch (e) {
+      errorMsg = 'Network or parsing error';
+    }
+    throw new Error(errorMsg);
+  }
+  const contentType = r.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    throw new Error('Expected JSON response');
+  }
   const d = await r.json();
-  if (!r.ok) throw new Error(d.error || 'Error');
   return d;
 }
 const get = p => apiFetch('GET', p);

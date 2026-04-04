@@ -81,8 +81,16 @@ const eventId = location.pathname.split('/choice/')[1];
 async function init() {
   try {
     const r = await fetch(`/api/events/${eventId}`);
+    if (!r.ok) {
+      const contentType = r.headers.get('content-type');
+      let errorMsg = 'Event not found';
+      if (contentType && contentType.includes('application/json')) {
+        const ev = await r.json();
+        errorMsg = ev.error || errorMsg;
+      }
+      throw new Error(errorMsg);
+    }
     const ev = await r.json();
-    if (!r.ok) throw new Error(ev.error);
     
     document.title = 'Choice: ' + ev.title + ' — EventVault';
     document.getElementById('hero-cat').textContent = ev.category || 'General';
