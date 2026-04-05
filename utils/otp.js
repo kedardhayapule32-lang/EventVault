@@ -33,13 +33,11 @@ module.exports = {
       </div>
     `;
 
-    try {
-      await emailUtil.sendEmail(email, subject, text, html);
-      return { success: true };
-    } catch (err) {
-      console.error('[OTP Error] Failed to send email:', err);
-      return { success: false, error: 'Failed to send verification email' };
-    }
+    // Send email non-blocking (fire and forget with error logging)
+    emailUtil.sendEmail(email, subject, text, html)
+      .catch(err => console.error('[OTP Email Error]', err.message));
+    
+    return { success: true };
   },
 
   async verifyOTP(email, otp) {

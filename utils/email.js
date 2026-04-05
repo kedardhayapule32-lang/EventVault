@@ -1,13 +1,14 @@
 const nodemailer = require('nodemailer');
 
-// Configure SMTP transport
-// These should ideally be in your .env file
+// Configure SMTP transport with timeout
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // true for 465, false for other ports
+  secure: false,
   requireTLS: true,
+  connectionTimeout: 5000,
+  socketTimeout: 5000,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
