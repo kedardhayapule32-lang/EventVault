@@ -10,7 +10,7 @@ let model = null;
 if (GEMINI_API_KEY) {
   console.log('✅ Gemini API Key detected. Initializing...');
   genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  model = genAI.getGenerativeModel({ model: "gemini-pro" });
 } else {
   console.error('❌ GEMINI_API_KEY is missing from environment variables!');
 }
